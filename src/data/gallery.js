@@ -2,7 +2,7 @@ export const gallery = [
   {
     id: 1,
     caption: 'גוון חדש',
-    image: 'https://images.unsplash.com/photo-1522338242992-e1a54906a8da?w=480&h=480&fit=crop&auto=format&q=80',
+    image: 'https://images.unsplash.com/photo-1554519515-242161756769?w=480&h=480&fit=crop&auto=format&q=80',
   },
   {
     id: 2,

@@ -34,8 +34,13 @@ function ChevronButton({ direction, onClick, disabled, label }) {
 export default function Testimonials() {
   const trackRef = useRef(null)
   const [index, setIndex] = useState(0)
+  const isFirstRender = useRef(true)
 
   useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false
+      return
+    }
     const item = trackRef.current?.children[index]
     item?.scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' })
   }, [index])
