@@ -12,13 +12,20 @@ export function getBookedSlots(dateKey) {
   return TIME_SLOTS.filter((_, i) => (hash + i) % 4 === 0)
 }
 
+// Local-time key (YYYY-MM-DD). toISOString() is UTC-based, which shifts the
+// date back a day between midnight and UTC offset hours (00:00–03:00 IDT).
+function localDateKey(d) {
+  const month = String(d.getMonth() + 1).padStart(2, '0')
+  const day = String(d.getDate()).padStart(2, '0')
+  return `${d.getFullYear()}-${month}-${day}`
+}
+
 export function nextDays(count = 7) {
   const today = new Date()
   return Array.from({ length: count }, (_, i) => {
-    const d = new Date(today)
-    d.setDate(today.getDate() + i)
+    const d = new Date(today.getFullYear(), today.getMonth(), today.getDate() + i)
     return {
-      key: d.toISOString().slice(0, 10),
+      key: localDateKey(d),
       dayName: DAY_NAMES[d.getDay()],
       dayNum: d.getDate(),
       monthName: MONTH_NAMES[d.getMonth()],

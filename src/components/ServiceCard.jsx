@@ -1,6 +1,10 @@
-const BADGE = {
-  women: { label: 'נשים', className: 'border-burgundy/30 bg-burgundy/10 text-burgundy' },
-  men: { label: 'גברים', className: 'border-charcoal/25 bg-charcoal/10 text-charcoal' },
+import { siteConfig } from '../config/siteConfig'
+
+const { serviceCard } = siteConfig.content
+
+const BADGE_STYLES = {
+  women: 'border-accent/30 bg-accent/10 text-accent',
+  men: 'border-ink/25 bg-ink/10 text-ink',
 }
 
 function ClockIcon() {
@@ -13,35 +17,36 @@ function ClockIcon() {
 }
 
 export default function ServiceCard({ service, onBook }) {
-  const badge = BADGE[service.audience]
+  const badgeLabel = serviceCard.badges[service.audience]
+  const badgeStyle = BADGE_STYLES[service.audience]
 
   return (
-    <li className="group relative flex flex-col gap-4 border border-charcoal/10 bg-white px-6 py-5 transition-colors hover:border-gold hover:shadow-[0_4px_20px_-8px_rgba(217,189,134,0.5)] sm:flex-row sm:items-center sm:justify-between">
-      {badge && (
+    <li className="group relative flex flex-col gap-4 border border-ink/10 bg-white px-6 py-5 transition-colors hover:border-primary hover:shadow-[0_4px_20px_-8px_rgba(217,189,134,0.5)] sm:flex-row sm:items-center sm:justify-between">
+      {badgeLabel && (
         <span
-          className={`absolute -top-2.5 right-5 rounded-full border px-2.5 py-0.5 text-[10px] font-semibold tracking-wide ${badge.className}`}
+          className={`absolute -top-2.5 right-5 rounded-full border px-2.5 py-0.5 text-[10px] font-semibold tracking-wide ${badgeStyle}`}
         >
-          {badge.label}
+          {badgeLabel}
         </span>
       )}
 
       <div>
-        <h3 className="font-display text-lg text-charcoal">{service.title}</h3>
-        <p className="mt-1 max-w-md text-sm text-stone">{service.desc}</p>
-        <div className="mt-2 flex items-center gap-1.5 text-xs text-stone">
+        <h3 className="font-display text-lg text-ink">{service.title}</h3>
+        <p className="mt-1 max-w-md text-sm text-muted">{service.desc}</p>
+        <div className="mt-2 flex items-center gap-1.5 text-xs text-muted">
           <ClockIcon />
           <span>{service.duration}</span>
         </div>
       </div>
 
       <div className="flex shrink-0 items-center gap-4 sm:flex-col sm:items-end sm:gap-2">
-        <span className="font-display text-xl text-charcoal">{service.price}</span>
+        <span className="font-display text-xl text-ink">{service.price}</span>
         <button
           type="button"
           onClick={onBook}
-          className="rounded-full border border-gold px-4 py-1.5 text-xs font-semibold text-gold transition-colors hover:bg-gold hover:text-charcoal"
+          className="rounded-full border border-primary px-4 py-1.5 text-xs font-semibold text-primary transition-colors hover:bg-primary hover:text-ink"
         >
-          להזמנה
+          {serviceCard.bookLabel}
         </button>
       </div>
     </li>

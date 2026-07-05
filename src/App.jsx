@@ -9,6 +9,7 @@ import Contact from './components/Contact'
 import Footer from './components/Footer'
 import BookingModal from './components/BookingModal'
 import FloatingButton from './components/FloatingButton'
+import { siteConfig } from './config/siteConfig'
 
 export default function App() {
   const [bookingOpen, setBookingOpen] = useState(false)
@@ -22,12 +23,12 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-cream font-body">
+    <div className="min-h-screen bg-surface font-body">
       <a
         href="#main"
-        className="sr-only focus:not-sr-only focus:absolute focus:right-4 focus:top-4 focus:z-[100] focus:bg-gold focus:px-4 focus:py-2 focus:font-semibold focus:text-charcoal"
+        className="sr-only focus:not-sr-only focus:absolute focus:right-4 focus:top-4 focus:z-[100] focus:bg-primary focus:px-4 focus:py-2 focus:font-semibold focus:text-ink"
       >
-        דלגו לתוכן הראשי
+        {siteConfig.content.skipToMain}
       </a>
       <Navbar />
       <main id="main">

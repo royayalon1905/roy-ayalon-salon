@@ -3,7 +3,7 @@
  * replacing full-width colored bands.
  */
 export default function VerticalRule({ tone = 'dark', className = '' }) {
-  const color = tone === 'dark' ? 'bg-charcoal/15' : 'bg-cream/25'
+  const color = tone === 'dark' ? 'bg-ink/15' : 'bg-surface/25'
 
   return <span aria-hidden="true" className={`hidden w-px self-stretch lg:block ${color} ${className}`} />
 }

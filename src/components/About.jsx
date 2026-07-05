@@ -1,30 +1,27 @@
 import RazorReveal from './RazorReveal'
-import { siteConfig } from '../config/siteConfig'
+import { siteConfig, fmt } from '../config/siteConfig'
 
-const { businessInfo } = siteConfig
+const { businessInfo, content } = siteConfig
+const { about } = content
 
 export default function About() {
   return (
-    <section id="about" className="bg-cream px-6 py-24 md:px-10 lg:py-32">
+    <section id="about" className="bg-surface px-6 py-24 md:px-10 lg:py-32">
       <div className="mx-auto max-w-2xl text-center">
-        <span className="text-xs font-semibold tracking-[0.3em] text-burgundy">הסיפור שלנו</span>
-        <RazorReveal as="h2" className="mx-auto mt-4 overflow-hidden font-display text-4xl text-charcoal sm:text-5xl">
-          כל שיער מספר סיפור אחר
+        <span className="text-xs font-semibold tracking-[0.3em] text-accent">{about.eyebrow}</span>
+        <RazorReveal as="h2" className="mx-auto mt-4 overflow-hidden font-display text-4xl text-ink sm:text-5xl">
+          {about.title}
         </RazorReveal>
 
-        <p className="mt-6 leading-relaxed text-stone">
-          מה שהתחיל ב־{businessInfo.foundedYear} כחדר קטן בשינקין, הפך לכתובת שאליה מגיעים כשרוצים שינוי אמיתי -
-          גוון חדש, אורך אחר, או פשוט מישהי שבאמת מקשיבה לפני שהיא נוגעת בשיער שלך.
-          בלי פשרות על התוצאה, בלי חיפזון בדרך אליה.
-        </p>
-        <p className="mt-4 leading-relaxed text-stone">
-          הצוות שלנו מתמחה בצבע ובליאז׳, החלקות, ותספורות שנבנות לפי מבנה הפנים והאישיות שלך -
-          לא לפי תמונה שהבאת מאינסטגרם.
-        </p>
+        {about.paragraphs.map((p, i) => (
+          <p key={i} className={`leading-relaxed text-muted ${i === 0 ? 'mt-6' : 'mt-4'}`}>
+            {fmt(p, { year: businessInfo.foundedYear })}
+          </p>
+        ))}
 
-        <div className="mx-auto mt-8 inline-flex items-center gap-2 border border-charcoal/15 px-4 py-2">
-          <span className="font-display text-lg text-gold">{businessInfo.foundedYear}</span>
-          <span className="text-sm text-stone">השנה בה הכל התחיל</span>
+        <div className="mx-auto mt-8 inline-flex items-center gap-2 border border-ink/15 px-4 py-2">
+          <span className="font-display text-lg text-primary">{businessInfo.foundedYear}</span>
+          <span className="text-sm text-muted">{about.foundedNote}</span>
         </div>
       </div>
     </section>

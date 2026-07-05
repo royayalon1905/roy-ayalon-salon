@@ -4,15 +4,13 @@
   --font-display: "Frank Ruhl Libre", serif;
   --font-body: "Assistant", sans-serif;
 
-  --color-charcoal: #2b221d;
-  --color-charcoal-light: #3a2e27;
-  --color-cream: #f8f1e7;
-  --color-cream-dim: #ece0d0;
-  --color-copper: #c9a48c;
-  --color-copper-light: #d9bfa9;
-  --color-gold: #d9bd86;
-  --color-burgundy: #c97c67;
-  --color-stone: #9c8f82;
+  --color-ink: #2b221d;
+  --color-ink-light: #3a2e27;
+  --color-surface: #f8f1e7;
+  --color-surface-dim: #ece0d0;
+  --color-primary: #d9bd86;
+  --color-accent: #c97c67;
+  --color-muted: #9c8f82;
 }
 
 @layer base {
@@ -30,14 +28,14 @@
   }
 
   html {
-    background: var(--color-cream);
+    background: var(--color-surface);
   }
 
   body {
     margin: 0;
     font-family: var(--font-body);
-    background: var(--color-cream);
-    color: var(--color-charcoal);
+    background: var(--color-surface);
+    color: var(--color-ink);
     -webkit-font-smoothing: antialiased;
   }
 
@@ -46,12 +44,12 @@
   }
 
   ::selection {
-    background: var(--color-gold);
-    color: var(--color-charcoal);
+    background: var(--color-primary);
+    color: var(--color-ink);
   }
 
   :focus-visible {
-    outline: 2px solid var(--color-gold);
+    outline: 2px solid var(--color-primary);
     outline-offset: 3px;
   }
 }
