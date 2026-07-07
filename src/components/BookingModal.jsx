@@ -1,6 +1,11 @@
 import { useEffect, useId, useMemo, useRef, useState } from 'react'
 import { siteConfig, fmt } from '../config/siteConfig'
 import { TIME_SLOTS, nextDays, getBookedSlots } from '../data/times'
+import { isValidIsraeliPhone } from '../utils/validation'
+import { useEscapeKey } from '../hooks/useEscapeKey'
+import { useBodyScrollLock } from '../hooks/useBodyScrollLock'
+import { useFocusTrap } from '../hooks/useFocusTrap'
+import ChevronIcon from './ChevronIcon'
 
 const { servicesData, staffData } = siteConfig
 const { booking } = siteConfig.content
@@ -11,22 +16,6 @@ function CloseIcon() {
   return (
     <svg viewBox="0 0 20 20" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.75">
       <path d="M5 5l10 10M15 5L5 15" strokeLinecap="round" />
-    </svg>
-  )
-}
-
-function BackIcon() {
-  return (
-    <svg viewBox="0 0 20 20" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.75">
-      <path d="M12 5l-5 5 5 5" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  )
-}
-
-function ChevronIcon() {
-  return (
-    <svg viewBox="0 0 20 20" className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.75">
-      <path d="M13 5l-5 5 5 5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   )
 }
@@ -79,19 +68,12 @@ export default function BookingModal({ isOpen, onClose, initialServiceId, initia
     setDone(false)
     setStep(initialServiceId && initialBarberId ? 2 : initialServiceId ? 1 : 0)
 
-    document.body.style.overflow = 'hidden'
     dialogRef.current?.focus()
-    return () => {
-      document.body.style.overflow = ''
-    }
   }, [isOpen, initialServiceId, initialBarberId])
 
-  useEffect(() => {
-    if (!isOpen) return
-    const onKey = (e) => e.key === 'Escape' && onClose()
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [isOpen, onClose])
+  useBodyScrollLock(isOpen)
+  useEscapeKey(isOpen, onClose)
+  useFocusTrap(isOpen, dialogRef)
 
   if (!isOpen) return null
 
@@ -103,8 +85,7 @@ export default function BookingModal({ isOpen, onClose, initialServiceId, initia
 
   function goNext() {
     if (step === 3) {
-      const digitsOnly = /^0\d{8,9}$/.test(phone.trim())
-      if (!digitsOnly) {
+      if (!isValidIsraeliPhone(phone)) {
         setPhoneError(booking.phoneError)
         return
       }
@@ -134,6 +115,12 @@ export default function BookingModal({ isOpen, onClose, initialServiceId, initia
   return (
     <div
       className="fixed inset-0 z-[100] flex items-center justify-center bg-ink/65 p-4 backdrop-blur-sm"
+      style={{
+        paddingTop: 'max(1rem, env(safe-area-inset-top))',
+        paddingBottom: 'max(1rem, env(safe-area-inset-bottom))',
+        paddingLeft: 'max(1rem, env(safe-area-inset-left))',
+        paddingRight: 'max(1rem, env(safe-area-inset-right))',
+      }}
       onClick={onClose}
     >
       <div
@@ -143,12 +130,12 @@ export default function BookingModal({ isOpen, onClose, initialServiceId, initia
         aria-labelledby="booking-modal-title"
         tabIndex={-1}
         onClick={(e) => e.stopPropagation()}
-        className="flex max-h-[90vh] w-full max-w-md flex-col overflow-hidden rounded-2xl bg-surface shadow-2xl outline-none"
+        className="flex max-h-[90dvh] w-full max-w-md flex-col overflow-hidden rounded-2xl bg-surface shadow-2xl outline-none"
       >
         <div className="flex items-center justify-between border-b border-ink/10 px-5 py-4">
           {!done && step > 0 ? (
             <button type="button" onClick={goBack} aria-label={booking.backLabel} className="text-ink/70 transition-colors hover:text-accent">
-              <BackIcon />
+              <ChevronIcon className="h-5 w-5" />
             </button>
           ) : (
             <span className="w-5" />
@@ -228,7 +215,7 @@ export default function BookingModal({ isOpen, onClose, initialServiceId, initia
                           <span className="block text-sm font-medium text-ink">{b.name}</span>
                           <span className="block text-xs text-muted">{b.role}</span>
                         </span>
-                        <ChevronIcon />
+                        <ChevronIcon className="h-4 w-4 shrink-0" />
                       </button>
                     </li>
                   ))}

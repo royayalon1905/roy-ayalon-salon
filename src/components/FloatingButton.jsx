@@ -14,7 +14,7 @@ export default function FloatingButton() {
   return (
     <a
       href="#services"
-      className={`fixed bottom-6 left-6 z-40 flex items-center gap-2 rounded-full bg-primary px-5 py-3.5 text-sm font-bold text-ink shadow-xl transition-all duration-300 hover:-translate-y-0.5 hover:shadow-2xl ${
+      className={`fixed bottom-[max(1.5rem,env(safe-area-inset-bottom))] left-[max(1.5rem,env(safe-area-inset-left))] z-40 flex items-center gap-2 rounded-full bg-primary px-5 py-3.5 text-sm font-bold text-ink shadow-xl transition-all duration-300 hover:-translate-y-0.5 hover:shadow-2xl ${
         visible ? 'translate-y-0 opacity-100' : 'pointer-events-none translate-y-4 opacity-0'
       }`}
     >

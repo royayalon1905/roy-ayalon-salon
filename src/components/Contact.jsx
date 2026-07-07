@@ -1,6 +1,7 @@
 import { useId, useState } from 'react'
 import RazorReveal from './RazorReveal'
 import { siteConfig } from '../config/siteConfig'
+import { isValidEmail, isValidIsraeliPhone } from '../utils/validation'
 
 const { businessInfo, content } = siteConfig
 const { contact } = content
@@ -24,9 +25,7 @@ export default function Contact() {
     e.preventDefault()
     const nextErrors = {}
     if (!values.name.trim()) nextErrors.name = form.nameError
-    const isPhone = /^0\d{8,9}$/.test(values.contact.trim())
-    const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.contact.trim())
-    if (!isPhone && !isEmail) nextErrors.contact = form.contactError
+    if (!isValidIsraeliPhone(values.contact) && !isValidEmail(values.contact)) nextErrors.contact = form.contactError
     if (!values.message.trim()) nextErrors.message = form.messageError
 
     if (Object.keys(nextErrors).length) {

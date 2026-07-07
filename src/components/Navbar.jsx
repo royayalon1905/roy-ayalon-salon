@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { siteConfig } from '../config/siteConfig'
+import { useEscapeKey } from '../hooks/useEscapeKey'
 
 const { businessInfo, nav } = siteConfig
 
@@ -14,12 +15,7 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  useEffect(() => {
-    if (!open) return
-    const onKey = (e) => e.key === 'Escape' && setOpen(false)
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [open])
+  useEscapeKey(open, () => setOpen(false))
 
   return (
     <header className="fixed inset-x-0 top-0 z-50">
@@ -29,7 +25,10 @@ export default function Navbar() {
         }`}
       />
 
-      <nav className="relative mx-auto flex max-w-7xl items-center justify-between px-6 py-4 md:px-10" aria-label={nav.ariaLabel}>
+      <nav
+        className="relative mx-auto flex max-w-7xl items-center justify-between py-4 pl-[max(1.5rem,env(safe-area-inset-left))] pr-[max(1.5rem,env(safe-area-inset-right))] md:pl-[max(2.5rem,env(safe-area-inset-left))] md:pr-[max(2.5rem,env(safe-area-inset-right))]"
+        aria-label={nav.ariaLabel}
+      >
         <a href="#top" className="font-display text-xl tracking-wide text-ink md:text-2xl">
           <span className="font-light">{businessInfo.shortName}</span><span className="text-accent"> · </span><span className="text-muted">{businessInfo.category}</span>
         </a>

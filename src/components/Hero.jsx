@@ -6,7 +6,7 @@ const { hero } = content
 
 export default function Hero() {
   return (
-    <section id="top" className="relative flex min-h-screen flex-col justify-center overflow-hidden" aria-label={hero.ariaLabel}>
+    <section id="top" className="relative flex min-h-dvh flex-col justify-center overflow-hidden" aria-label={hero.ariaLabel}>
       <img
         src={theme.heroImage}
         alt={theme.heroImageAlt}

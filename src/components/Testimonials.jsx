@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { testimonials } from '../data/testimonials'
 import RazorReveal from './RazorReveal'
+import ChevronIcon from './ChevronIcon'
 import { siteConfig } from '../config/siteConfig'
 
 const testimonialsContent = siteConfig.content.testimonials
@@ -27,9 +28,7 @@ function ChevronButton({ direction, onClick, disabled, label }) {
       aria-label={label}
       className="flex h-9 w-9 items-center justify-center border border-ink/15 bg-white text-ink transition-colors hover:border-primary hover:text-accent disabled:pointer-events-none disabled:opacity-30"
     >
-      <svg viewBox="0 0 20 20" className={`h-4 w-4 ${rotate}`} fill="none" stroke="currentColor" strokeWidth="1.75">
-        <path d="M12 5l-5 5 5 5" strokeLinecap="round" strokeLinejoin="round" />
-      </svg>
+      <ChevronIcon className={`h-4 w-4 ${rotate}`} />
     </button>
   )
 }
