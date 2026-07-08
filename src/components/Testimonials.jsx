@@ -51,7 +51,7 @@ export default function Testimonials() {
   const atEnd = index >= testimonials.length - 1
 
   return (
-    <section id="testimonials" className="border-y border-ink/10 bg-surface py-24">
+    <section id="testimonials" className="border-y border-ink/10 bg-surface py-24 lg:py-32">
       <div className="mx-auto max-w-7xl px-6 md:px-10">
         <div className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-end">
           <div>

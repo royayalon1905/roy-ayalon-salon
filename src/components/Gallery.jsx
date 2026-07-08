@@ -6,7 +6,7 @@ const galleryContent = siteConfig.content.gallery
 
 export default function Gallery() {
   return (
-    <section id="gallery" className="border-y border-ink/10 bg-surface py-24">
+    <section id="gallery" className="border-y border-ink/10 bg-surface py-24 lg:py-32">
       <div className="mx-auto max-w-7xl px-6 md:px-10">
         <span className="text-xs font-semibold tracking-[0.3em] text-accent">{galleryContent.eyebrow}</span>
         <RazorReveal as="h2" className="mt-4 overflow-hidden font-display text-4xl text-ink sm:text-5xl">

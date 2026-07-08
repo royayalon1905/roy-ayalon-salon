@@ -24,7 +24,15 @@ export function useReveal(options = {}) {
     )
 
     observer.observe(node)
-    return () => observer.disconnect()
+
+    // Safety net: if the observer never reports an intersection (browser
+    // quirk, unusual layout), don't leave the content permanently hidden.
+    const fallback = setTimeout(() => setVisible(true), 1500)
+
+    return () => {
+      observer.disconnect()
+      clearTimeout(fallback)
+    }
   }, [])
 
   return [ref, visible]
