@@ -48,7 +48,7 @@ export default function Contact() {
             {sent ? (
               <div className="flex h-full flex-col items-center justify-center border border-primary/30 bg-ink p-10 text-center" role="status">
                 <p className="font-display text-2xl text-surface">{form.sentTitle}</p>
-                <p className="mt-2 text-muted">{form.sentBody}</p>
+                <p className="mt-2 text-muted-on-dark">{form.sentBody}</p>
                 <button
                   type="button"
                   onClick={() => {

@@ -9,8 +9,9 @@
   --color-surface: #f8f1e7;
   --color-surface-dim: #ece0d0;
   --color-primary: #d9bd86;
-  --color-accent: #c97c67;
-  --color-muted: #9c8f82;
+  --color-accent: #aa543c;
+  --color-muted: #786b5f;
+  --color-muted-on-dark: #9c8f82;
 }
 
 @layer base {

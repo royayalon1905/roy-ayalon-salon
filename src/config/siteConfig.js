@@ -210,8 +210,9 @@ export const siteConfig = {
       surface: '#f8f1e7',
       surfaceDim: '#ece0d0',
       primary: '#d9bd86',
-      accent: '#c97c67',
-      muted: '#9c8f82',
+      accent: '#aa543c',
+      muted: '#786b5f',
+      mutedOnDark: '#9c8f82',
     },
     fonts: {
       display: "'Frank Ruhl Libre', serif",
