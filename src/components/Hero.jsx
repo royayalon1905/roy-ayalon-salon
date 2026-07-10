@@ -12,7 +12,15 @@ export default function Hero() {
         alt={theme.heroImageAlt}
         className="absolute inset-0 h-full w-full object-cover"
       />
-      <div className="absolute inset-0 bg-ink/55" aria-hidden="true" />
+      <div className="absolute inset-0 bg-ink/25" aria-hidden="true" />
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            'radial-gradient(ellipse 85% 75% at 50% 45%, color-mix(in srgb, var(--color-ink) 68%, transparent) 0%, color-mix(in srgb, var(--color-ink) 42%, transparent) 68%, transparent 100%), linear-gradient(to top, color-mix(in srgb, var(--color-ink) 60%, transparent) 0%, transparent 30%)',
+        }}
+        aria-hidden="true"
+      />
 
       <div className="relative z-10 mx-auto flex w-full max-w-2xl flex-col px-6 py-32 text-center">
         <div className="mb-8 flex items-center justify-center gap-4 sm:gap-5">
@@ -21,7 +29,7 @@ export default function Hero() {
           <span className="h-px max-w-[45px] flex-1 bg-primary sm:max-w-[75px] lg:max-w-[95px]" />
         </div>
 
-        <RazorReveal as="h1" className="mb-6 overflow-hidden font-display text-4xl font-light leading-tight tracking-wide text-surface sm:text-5xl lg:text-6xl">
+        <RazorReveal as="h1" className="mb-6 overflow-hidden font-display text-5xl font-medium leading-tight tracking-wide text-surface sm:text-6xl lg:text-7xl">
           {businessInfo.shortName} {businessInfo.category}
         </RazorReveal>
 
