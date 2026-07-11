@@ -24,6 +24,11 @@ export const siteConfig = {
       { label: 'פייסבוק', href: '#' },
       { label: 'וואטסאפ', href: '#' },
     ],
+    accessibility: {
+      wheelchairAccess: true,
+      accessibleParking: true,
+      notes: '',
+    },
   },
 
   nav: {
@@ -101,6 +106,10 @@ export const siteConfig = {
         addressLabel: 'כתובת',
         phoneLabel: 'טלפון',
         hoursLabel: 'שעות פתיחה',
+        accessibilityLabel: 'נגישות פיזית במקום',
+        accessibilityWheelchairYes: 'המקום נגיש לכיסא גלגלים — כניסה ללא מדרגות',
+        accessibilityWheelchairNo: 'יש מדרגה בכניסה למקום',
+        accessibilityParkingYes: 'חניה נגישה בקרבת מקום',
       },
     },
     booking: {

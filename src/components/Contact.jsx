@@ -7,10 +7,29 @@ const { businessInfo, content } = siteConfig
 const { contact } = content
 const { form, info } = contact
 
+function AccessibilityIcon() {
+  return (
+    <svg viewBox="0 0 20 20" className="h-4 w-4 text-primary" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <circle cx="10" cy="3.5" r="1.5" />
+      <path
+        d="M10 6.5v4l-3.5 5M10 10.5l3.5 5M6 9h6.5M10 10.5V6.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path d="M4.5 14.5a5.5 5.5 0 0 1 4-9" strokeLinecap="round" />
+    </svg>
+  )
+}
+
 export default function Contact() {
   const [values, setValues] = useState({ name: '', contact: '', message: '' })
   const [errors, setErrors] = useState({})
   const [sent, setSent] = useState(false)
+
+  const { accessibility } = businessInfo
+  const accessibilitySegments = [accessibility.wheelchairAccess ? info.accessibilityWheelchairYes : info.accessibilityWheelchairNo]
+  if (accessibility.accessibleParking) accessibilitySegments.push(info.accessibilityParkingYes)
+  const accessibilitySentence = `${accessibilitySegments.join(', ')}.`
 
   const nameId = useId()
   const contactId = useId()
@@ -147,6 +166,14 @@ export default function Contact() {
                     </li>
                   ))}
                 </ul>
+              </div>
+              <div className="col-span-2 flex items-start gap-2.5 border-t border-primary/20 pt-4">
+                <AccessibilityIcon />
+                <div>
+                  <p className="text-xs tracking-widest text-primary">{info.accessibilityLabel}</p>
+                  <p className="mt-1.5 text-sm text-surface-dim">{accessibilitySentence}</p>
+                  {accessibility.notes && <p className="mt-1 text-sm text-surface-dim">{accessibility.notes}</p>}
+                </div>
               </div>
             </div>
           </div>
