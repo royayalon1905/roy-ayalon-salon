@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import { testimonials } from '../data/testimonials'
 import RazorReveal from './RazorReveal'
 import ChevronIcon from './ChevronIcon'
-import { siteConfig } from '../config/siteConfig'
+import { siteConfig, fmt } from '../config/siteConfig'
 
 const testimonialsContent = siteConfig.content.testimonials
 
@@ -18,7 +18,7 @@ function Stars() {
   )
 }
 
-function ChevronButton({ direction, onClick, disabled, label }) {
+function ChevronButton({ direction, onClick, disabled, label, controls }) {
   const rotate = direction === 'prev' ? '' : 'rotate-180'
   return (
     <button
@@ -26,6 +26,7 @@ function ChevronButton({ direction, onClick, disabled, label }) {
       onClick={onClick}
       disabled={disabled}
       aria-label={label}
+      aria-controls={controls}
       className="flex h-9 w-9 items-center justify-center border border-ink/15 bg-white text-ink transition-colors hover:border-primary hover:text-accent disabled:pointer-events-none disabled:opacity-30"
     >
       <ChevronIcon className={`h-4 w-4 ${rotate}`} />
@@ -37,6 +38,7 @@ export default function Testimonials() {
   const trackRef = useRef(null)
   const [index, setIndex] = useState(0)
   const isFirstRender = useRef(true)
+  const trackId = useId()
 
   useEffect(() => {
     if (isFirstRender.current) {
@@ -62,17 +64,39 @@ export default function Testimonials() {
           </div>
 
           <div className="flex gap-2">
-            <ChevronButton direction="prev" onClick={() => setIndex((i) => Math.max(i - 1, 0))} disabled={atStart} label={testimonialsContent.prevLabel} />
-            <ChevronButton direction="next" onClick={() => setIndex((i) => Math.min(i + 1, testimonials.length - 1))} disabled={atEnd} label={testimonialsContent.nextLabel} />
+            <ChevronButton
+              direction="prev"
+              onClick={() => setIndex((i) => Math.max(i - 1, 0))}
+              disabled={atStart}
+              label={testimonialsContent.prevLabel}
+              controls={trackId}
+            />
+            <ChevronButton
+              direction="next"
+              onClick={() => setIndex((i) => Math.min(i + 1, testimonials.length - 1))}
+              disabled={atEnd}
+              label={testimonialsContent.nextLabel}
+              controls={trackId}
+            />
           </div>
         </div>
 
         <div
           ref={trackRef}
+          id={trackId}
+          role="group"
+          aria-roledescription="קרוסלה"
+          aria-label={testimonialsContent.carouselLabel}
           className="mt-10 grid auto-cols-[85vw] grid-flow-col gap-4 overflow-x-auto scroll-smooth pb-2 sm:auto-cols-[calc(20%-13px)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
-          {testimonials.map((t) => (
-            <figure key={t.id} className="flex flex-col border border-ink/10 bg-white p-6">
+          {testimonials.map((t, i) => (
+            <figure
+              key={t.id}
+              role="group"
+              aria-roledescription="שקופית"
+              aria-label={fmt(testimonialsContent.slideLabel, { current: i + 1, total: testimonials.length })}
+              className="flex flex-col border border-ink/10 bg-white p-6"
+            >
               <Stars />
               <blockquote className="mt-3 flex-1 text-sm leading-relaxed text-muted">&rdquo;{t.quote}&rdquo;</blockquote>
               <figcaption className="mt-4 text-sm">
@@ -82,6 +106,9 @@ export default function Testimonials() {
             </figure>
           ))}
         </div>
+        <p className="sr-only" aria-live="polite">
+          {fmt(testimonialsContent.positionLabel, { current: index + 1, total: testimonials.length })}
+        </p>
       </div>
     </section>
   )

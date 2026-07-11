@@ -45,6 +45,10 @@ export default function Footer() {
 
         <div className="flex flex-col items-center justify-between gap-3 pt-6 text-xs text-muted sm:flex-row">
           <p>© {new Date().getFullYear()} {businessInfo.shortName} - {businessInfo.category}. {footer.rightsNote}</p>
+          <nav aria-label={footer.legalTitle} className="flex gap-4">
+            <a href={content.legal.accessibility.path} className="hover:text-primary">{footer.accessibilityLinkLabel}</a>
+            <a href={content.legal.privacy.path} className="hover:text-primary">{footer.privacyLinkLabel}</a>
+          </nav>
           <p>{footer.demoNote}</p>
         </div>
       </div>

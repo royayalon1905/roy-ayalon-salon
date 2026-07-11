@@ -21,7 +21,7 @@ export default function Gallery() {
             >
               <img
                 src={g.image}
-                alt={g.caption}
+                alt={g.alt}
                 loading="lazy"
                 className="h-full w-full object-cover grayscale-[15%]"
               />

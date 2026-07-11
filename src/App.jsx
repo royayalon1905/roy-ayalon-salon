@@ -9,12 +9,19 @@ import Contact from './components/Contact'
 import Footer from './components/Footer'
 import BookingModal from './components/BookingModal'
 import FloatingButton from './components/FloatingButton'
+import LegalPage from './components/LegalPage'
 import { siteConfig } from './config/siteConfig'
+
+const { legal } = siteConfig.content
 
 export default function App() {
   const [bookingOpen, setBookingOpen] = useState(false)
   const [bookingServiceId, setBookingServiceId] = useState(null)
   const [bookingBarberId, setBookingBarberId] = useState(null)
+
+  const path = window.location.pathname.replace(/\/+$/, '') || '/'
+  if (path === legal.accessibility.path) return <LegalPage page={legal.accessibility} />
+  if (path === legal.privacy.path) return <LegalPage page={legal.privacy} />
 
   function openBooking(serviceId = null, barberId = null) {
     setBookingServiceId(serviceId)
