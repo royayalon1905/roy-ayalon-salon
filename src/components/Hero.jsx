@@ -10,14 +10,14 @@ export default function Hero() {
       <img
         src={theme.heroImage}
         alt={theme.heroImageAlt}
-        className="absolute inset-0 h-full w-full object-cover"
+        className="absolute inset-0 h-full w-full object-cover saturate-[0.35]"
       />
-      <div className="absolute inset-0 bg-ink/25" aria-hidden="true" />
+      <div className="absolute inset-0 bg-ink/50" aria-hidden="true" />
       <div
         className="absolute inset-0"
         style={{
           background:
-            'radial-gradient(ellipse 85% 75% at 50% 45%, color-mix(in srgb, var(--color-ink) 68%, transparent) 0%, color-mix(in srgb, var(--color-ink) 42%, transparent) 68%, transparent 100%), linear-gradient(to top, color-mix(in srgb, var(--color-ink) 60%, transparent) 0%, transparent 30%)',
+            'linear-gradient(to top, color-mix(in srgb, var(--color-ink) 45%, transparent) 0%, transparent 30%), color-mix(in srgb, var(--color-ink) 30%, transparent)',
         }}
         aria-hidden="true"
       />
@@ -25,7 +25,7 @@ export default function Hero() {
       <div className="relative z-10 mx-auto flex w-full max-w-2xl flex-col px-6 py-32 text-center">
         <div className="mb-8 flex items-center justify-center gap-4 sm:gap-5">
           <span className="h-px max-w-[45px] flex-1 bg-primary sm:max-w-[75px] lg:max-w-[95px]" />
-          <p className="whitespace-nowrap text-sm tracking-[0.25em] text-primary sm:text-base">{businessInfo.heroEyebrow}</p>
+          <p className="whitespace-nowrap text-sm tracking-[0.25em] text-primary-on-dark sm:text-base">{businessInfo.heroEyebrow}</p>
           <span className="h-px max-w-[45px] flex-1 bg-primary sm:max-w-[75px] lg:max-w-[95px]" />
         </div>
 
@@ -33,7 +33,7 @@ export default function Hero() {
           {businessInfo.shortName} {businessInfo.category}
         </RazorReveal>
 
-        <RazorReveal delay={140} as="p" className="mb-12 overflow-hidden text-sm font-light tracking-widest text-surface-dim">
+        <RazorReveal delay={140} as="p" className="mb-12 overflow-hidden text-sm font-light tracking-widest text-surface">
           {businessInfo.heroSubtitle}
         </RazorReveal>
 

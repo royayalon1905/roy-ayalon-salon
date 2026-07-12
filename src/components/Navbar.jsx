@@ -29,8 +29,8 @@ export default function Navbar() {
         className="relative mx-auto flex max-w-7xl items-center justify-between py-4 pl-[max(1.5rem,env(safe-area-inset-left))] pr-[max(1.5rem,env(safe-area-inset-right))] md:pl-[max(2.5rem,env(safe-area-inset-left))] md:pr-[max(2.5rem,env(safe-area-inset-right))]"
         aria-label={nav.ariaLabel}
       >
-        <a href="#top" className="font-display text-xl tracking-wide text-ink md:text-2xl">
-          <span className="font-light">{businessInfo.shortName}</span><span className="text-accent"> · </span><span className="text-muted">{businessInfo.category}</span>
+        <a href="#top" className={`font-display text-xl tracking-wide transition-colors duration-500 md:text-2xl ${scrolled ? 'text-ink' : 'text-surface'}`}>
+          <span className="font-light">{businessInfo.shortName}</span><span className={scrolled ? 'text-accent' : 'text-primary'}> · </span><span className={scrolled ? 'text-muted' : 'text-surface-dim'}>{businessInfo.category}</span>
         </a>
 
         <ul className="hidden items-center gap-8 md:flex">
@@ -38,7 +38,11 @@ export default function Navbar() {
             <li key={l.href}>
               <a
                 href={l.href}
-                className="relative text-sm font-medium text-ink/80 transition-colors hover:text-accent after:absolute after:-bottom-1 after:right-0 after:h-px after:w-0 after:bg-accent after:transition-all after:duration-300 hover:after:w-full"
+                className={`relative text-sm font-medium transition-colors after:absolute after:-bottom-1 after:right-0 after:h-px after:w-0 after:transition-all after:duration-300 hover:after:w-full ${
+                  scrolled
+                    ? 'text-ink/80 hover:text-accent after:bg-accent'
+                    : 'text-surface hover:text-primary after:bg-primary'
+                }`}
               >
                 {l.label}
               </a>
@@ -48,7 +52,11 @@ export default function Navbar() {
 
         <a
           href="#services"
-          className="hidden rounded-none border border-ink px-5 py-2 text-sm font-semibold text-ink transition-colors hover:bg-ink hover:text-surface md:inline-block"
+          className={`hidden rounded-none border px-5 py-2 text-sm font-semibold transition-colors md:inline-block ${
+            scrolled
+              ? 'border-ink text-ink hover:bg-ink hover:text-surface'
+              : 'border-surface text-surface hover:bg-surface hover:text-ink'
+          }`}
         >
           {nav.bookCta}
         </a>
@@ -61,9 +69,9 @@ export default function Navbar() {
           aria-controls="mobile-menu"
           onClick={() => setOpen((v) => !v)}
         >
-          <span className={`h-px w-6 bg-ink transition-transform ${open ? 'translate-y-2 rotate-45' : ''}`} />
-          <span className={`h-px w-6 bg-ink transition-opacity ${open ? 'opacity-0' : ''}`} />
-          <span className={`h-px w-6 bg-ink transition-transform ${open ? '-translate-y-2 -rotate-45' : ''}`} />
+          <span className={`h-px w-6 transition-transform ${scrolled ? 'bg-ink' : 'bg-surface'} ${open ? 'translate-y-2 rotate-45' : ''}`} />
+          <span className={`h-px w-6 transition-opacity ${scrolled ? 'bg-ink' : 'bg-surface'} ${open ? 'opacity-0' : ''}`} />
+          <span className={`h-px w-6 transition-transform ${scrolled ? 'bg-ink' : 'bg-surface'} ${open ? '-translate-y-2 -rotate-45' : ''}`} />
         </button>
       </nav>
 

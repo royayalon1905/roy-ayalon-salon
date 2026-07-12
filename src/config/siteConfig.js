@@ -322,6 +322,7 @@ export const siteConfig = {
       surface: '#f8f1e7',
       surfaceDim: '#ece0d0',
       primary: '#d9bd86',
+      primaryOnDark: '#f0e2be',
       accent: '#aa543c',
       muted: '#786b5f',
       mutedOnDark: '#9c8f82',
