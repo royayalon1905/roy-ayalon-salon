@@ -47,6 +47,12 @@ export const siteConfig = {
   content: {
     skipToMain: 'דלגו לתוכן הראשי',
     floatingCta: 'קביעת תור',
+    floatingQuickLinks: {
+      groupLabel: 'קישורים מהירים',
+      whatsappLabel: 'שליחת הודעת וואטסאפ',
+      whatsappMessage: 'היי, ראיתי את האתר ורוצה לשמוע פרטים',
+      accessibilityLabel: 'הצהרת נגישות',
+    },
     hero: {
       ariaLabel: 'כותרת ראשית',
       ctaBook: 'קביעת תור',
@@ -133,10 +139,15 @@ export const siteConfig = {
       summaryTitle: 'סיכום ההזמנה',
       nextLabel: 'המשך',
       confirmLabel: 'אישור הזמנה',
+      submittingLabel: 'שולח...',
+      submitError: 'השליחה נכשלה. נסו שוב, או התקשרו אלינו ונקבע יחד.',
+      cooldownError: 'קיבלנו את הפנייה שלך - נחזור אליך בקרוב.',
       dateTimeSummary: 'יום {day}, {date} ל{month} בשעה {time}',
       confirmation: {
-        greeting: 'מחכים לך, {name}',
-        summary: '{service} עם {barber} — יום {day}, {date} ל{month} בשעה {time}.',
+        greeting: 'תודה, {name}!',
+        summary: 'קיבלנו את בקשתך ל{service} עם {barber} — יום {day}, {date} ל{month} בשעה {time}.',
+        codeNote: 'מספר תור: #{code}',
+        waitNote: 'נעדכן אותך בוואטסאפ ברגע שהמועד יאושר.',
         demoNote: 'זהו דמו — לא נשלח אישור אמיתי.',
         anotherLabel: 'תור נוסף',
         closeLabel: 'סגירה',
@@ -152,6 +163,9 @@ export const siteConfig = {
       accessibilityLinkLabel: 'הצהרת נגישות',
       privacyLinkLabel: 'מדיניות פרטיות',
     },
+    // היקף נוכחי (עסק קטן, פחות מ-10,000 רשומות, לא תיווך מידע) - DPO, רישום מאגר מידע ורכז נגישות
+    // רשמי לא נדרשים. לבדוק מחדש אם מספר הלקוחות/הרשומות גדל משמעותית - ראה israeli-privacy-shield /
+    // israeli-accessibility-compliance skills לספי הסף המדויקים כשזה רלוונטי.
     legal: {
       backLabel: 'חזרה לעמוד הבית',
       updatedLabel: 'עודכן לאחרונה',

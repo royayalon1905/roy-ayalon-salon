@@ -12,6 +12,28 @@ export function getBookedSlots(dateKey) {
   return TIME_SLOTS.filter((_, i) => (hash + i) % 4 === 0)
 }
 
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL
+const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY
+
+// mt_clients.id for this clone (salon-demo), from the multi-tenant n8n/Supabase migration.
+const MT_CLIENT_ID = '99eeef59-4def-40e4-9fe2-106a26e6f0ce'
+
+// Real availability from the mt_busy_slots view (confirmed appointments only,
+// no client details exposed). Falls back to the demo hash when the site
+// runs without a configured backend (white-label clone before hookup).
+export async function fetchBusySlots(dateKey, barberName) {
+  if (!dateKey) return []
+  if (!SUPABASE_URL || !SUPABASE_KEY) return getBookedSlots(dateKey)
+  const params = new URLSearchParams({ select: 'time', date: `eq.${dateKey}`, client_id: `eq.${MT_CLIENT_ID}` })
+  if (barberName) params.set('barber', `eq.${barberName}`)
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/mt_busy_slots?${params}`, {
+    headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` },
+  })
+  if (!res.ok) throw new Error(`mt_busy_slots request failed: ${res.status}`)
+  const rows = await res.json()
+  return rows.map((row) => String(row.time).slice(0, 5))
+}
+
 // Local-time key (YYYY-MM-DD). toISOString() is UTC-based, which shifts the
 // date back a day between midnight and UTC offset hours (00:00–03:00 IDT).
 function localDateKey(d) {

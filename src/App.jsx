@@ -9,6 +9,7 @@ import Contact from './components/Contact'
 import Footer from './components/Footer'
 import BookingModal from './components/BookingModal'
 import FloatingButton from './components/FloatingButton'
+import FloatingQuickLinks from './components/FloatingQuickLinks'
 import LegalPage from './components/LegalPage'
 import { siteConfig } from './config/siteConfig'
 
@@ -49,6 +50,7 @@ export default function App() {
       <Footer />
 
       <FloatingButton />
+      <FloatingQuickLinks />
       <BookingModal
         isOpen={bookingOpen}
         onClose={() => setBookingOpen(false)}

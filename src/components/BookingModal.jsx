@@ -1,6 +1,6 @@
 import { useEffect, useId, useMemo, useRef, useState } from 'react'
 import { siteConfig, fmt } from '../config/siteConfig'
-import { TIME_SLOTS, nextDays, getBookedSlots } from '../data/times'
+import { TIME_SLOTS, nextDays, fetchBusySlots } from '../data/times'
 import { isValidIsraeliPhone } from '../utils/validation'
 import { useEscapeKey } from '../hooks/useEscapeKey'
 import { useBodyScrollLock } from '../hooks/useBodyScrollLock'
@@ -11,6 +11,7 @@ const { servicesData, staffData } = siteConfig
 const { booking } = siteConfig.content
 
 const STEP_COUNT = 4
+const WEBHOOK_URL = import.meta.env.VITE_BOOKING_WEBHOOK_URL
 
 function CloseIcon() {
   return (
@@ -48,9 +49,31 @@ export default function BookingModal({ isOpen, onClose, initialServiceId, initia
   const [consent, setConsent] = useState(false)
   const [phoneError, setPhoneError] = useState('')
   const [done, setDone] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+  const [submitError, setSubmitError] = useState('')
+  const [appointmentCode, setAppointmentCode] = useState(null)
+  const [bookedSlots, setBookedSlots] = useState([])
 
   const days = useMemo(() => nextDays(7), [])
-  const bookedSlots = useMemo(() => getBookedSlots(date), [date])
+
+  useEffect(() => {
+    if (!date) {
+      setBookedSlots([])
+      return
+    }
+    let cancelled = false
+    const barberName = staffData.find((b) => b.id === barberId)?.name
+    fetchBusySlots(date, barberName)
+      .then((slots) => {
+        if (!cancelled) setBookedSlots(slots)
+      })
+      .catch(() => {
+        if (!cancelled) setBookedSlots([])
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [date, barberId])
   const nameId = useId()
   const phoneId = useId()
   const dialogRef = useRef(null)
@@ -66,6 +89,9 @@ export default function BookingModal({ isOpen, onClose, initialServiceId, initia
     setConsent(false)
     setPhoneError('')
     setDone(false)
+    setSubmitting(false)
+    setSubmitError('')
+    setAppointmentCode(null)
     setStep(initialServiceId && initialBarberId ? 2 : initialServiceId ? 1 : 0)
 
     dialogRef.current?.focus()
@@ -83,13 +109,52 @@ export default function BookingModal({ isOpen, onClose, initialServiceId, initia
 
   const canNext = [Boolean(serviceId), Boolean(barberId), Boolean(date && time), Boolean(name.trim() && phone.trim())]
 
+  async function submitBooking() {
+    setSubmitting(true)
+    setSubmitError('')
+    try {
+      const res = await fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          client_slug: 'salon-demo',
+          service_id: serviceId,
+          service: service?.title,
+          barber_id: barberId,
+          staff_member: barber?.name,
+          date,
+          time,
+          name: name.trim(),
+          phone: phone.trim(),
+          marketing_consent: consent,
+        }),
+      })
+      if (res.status === 429) {
+        setSubmitError(booking.cooldownError)
+        return
+      }
+      if (!res.ok) throw new Error(`booking webhook failed: ${res.status}`)
+      const data = await res.json().catch(() => ({}))
+      setAppointmentCode(data.appointment_code ?? null)
+      setDone(true)
+    } catch {
+      setSubmitError(booking.submitError)
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
   function goNext() {
     if (step === 3) {
       if (!isValidIsraeliPhone(phone)) {
         setPhoneError(booking.phoneError)
         return
       }
-      setDone(true)
+      if (WEBHOOK_URL) {
+        submitBooking()
+      } else {
+        setDone(true)
+      }
       return
     }
     if (canNext[step]) setStep((s) => Math.min(s + 1, STEP_COUNT - 1))
@@ -168,7 +233,7 @@ export default function BookingModal({ isOpen, onClose, initialServiceId, initia
 
         <div className="overflow-y-auto px-5 pb-5">
           {done ? (
-            <ConfirmationView service={service} barber={barber} dateInfo={dateInfo} time={time} name={name} onReset={handleReset} onClose={onClose} />
+            <ConfirmationView service={service} barber={barber} dateInfo={dateInfo} time={time} name={name} code={appointmentCode} onReset={handleReset} onClose={onClose} />
           ) : (
             <>
               {step === 0 && (
@@ -332,13 +397,17 @@ export default function BookingModal({ isOpen, onClose, initialServiceId, initia
                 </div>
               )}
 
+              {submitError && (
+                <p role="alert" className="mt-4 text-sm text-accent">{submitError}</p>
+              )}
+
               <button
                 type="button"
                 onClick={goNext}
-                disabled={!canNext[step]}
+                disabled={!canNext[step] || submitting}
                 className="mt-6 w-full bg-primary py-3.5 text-sm font-bold text-ink transition-transform hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0"
               >
-                {step === 3 ? booking.confirmLabel : booking.nextLabel}
+                {step === 3 ? (submitting ? booking.submittingLabel : booking.confirmLabel) : booking.nextLabel}
               </button>
             </>
           )}
@@ -348,7 +417,7 @@ export default function BookingModal({ isOpen, onClose, initialServiceId, initia
   )
 }
 
-function ConfirmationView({ service, barber, dateInfo, time, name, onReset, onClose }) {
+function ConfirmationView({ service, barber, dateInfo, time, name, code, onReset, onClose }) {
   return (
     <div className="flex flex-col items-center py-4 text-center" role="status">
       <div className="flex h-16 w-16 items-center justify-center rounded-full border border-primary">
@@ -360,7 +429,14 @@ function ConfirmationView({ service, barber, dateInfo, time, name, onReset, onCl
       <p className="mt-3 text-sm text-muted">
         {fmt(booking.confirmation.summary, { service: service?.title, barber: barber?.name, day: dateInfo?.dayName, date: dateInfo?.dayNum, month: dateInfo?.monthName, time })}
       </p>
-      <p className="mt-1 text-xs text-muted">{booking.confirmation.demoNote}</p>
+      {code ? (
+        <>
+          <p className="mt-3 text-base font-semibold text-ink">{fmt(booking.confirmation.codeNote, { code })}</p>
+          <p className="mt-1 text-xs text-muted">{booking.confirmation.waitNote}</p>
+        </>
+      ) : (
+        <p className="mt-1 text-xs text-muted">{booking.confirmation.demoNote}</p>
+      )}
       <div className="mt-8 flex w-full gap-3">
         <button
           type="button"
