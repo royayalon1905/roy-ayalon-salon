@@ -25,7 +25,9 @@ export async function fetchBusySlots(dateKey, barberName) {
   if (!dateKey) return []
   if (!SUPABASE_URL || !SUPABASE_KEY) return getBookedSlots(dateKey)
   const params = new URLSearchParams({ select: 'time', date: `eq.${dateKey}`, client_id: `eq.${MT_CLIENT_ID}` })
-  if (barberName) params.set('barber', `eq.${barberName}`)
+  // barber.is.null = חסימה כלל-עסקית (בעל העסק סגר את כל הספרים לשעה הזו), חייבת להופיע
+  // לכל בחירת ספר, לא רק לספר ספציפי. ראו mt_blocked_slots + mt_busy_slots (10.8.2026).
+  if (barberName) params.set('or', `(barber.is.null,barber.eq.${barberName})`)
   const res = await fetch(`${SUPABASE_URL}/rest/v1/mt_busy_slots?${params}`, {
     headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` },
   })
