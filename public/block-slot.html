@@ -13,8 +13,9 @@
   h1 { font-size: 1.3rem; margin: 0 0 6px; }
   p.hint { color: var(--muted); font-size: .9rem; margin: 0 0 22px; }
   label { display: block; font-weight: 600; font-size: .9rem; margin: 14px 0 6px; }
-  input { width: 100%; padding: 10px 12px; border: 1.5px solid #ddd; border-radius: 8px; font-size: 1rem; font-family: inherit; }
-  input:focus { outline: none; border-color: var(--accent); }
+  .req { color: var(--error); margin-inline-start: 3px; }
+  input, select { width: 100%; padding: 10px 12px; border: 1.5px solid #ddd; border-radius: 8px; font-size: 1rem; font-family: inherit; background: #fff; }
+  input:focus, select:focus { outline: none; border-color: var(--accent); }
   button { width: 100%; margin-top: 22px; padding: 13px; border: none; border-radius: 10px; background: var(--accent); color: var(--primary); font-weight: 700; font-size: 1rem; cursor: pointer; }
   button:disabled { opacity: .6; cursor: not-allowed; }
   .msg { margin-top: 16px; font-size: .9rem; padding: 10px 12px; border-radius: 8px; display: none; }
@@ -25,25 +26,32 @@
 <body>
   <div class="card">
     <h1>חסימת שעה ידנית</h1>
-    <p class="hint">סוגר חלון זמנים כדי שהמערכת לא תציע אותו ללקוחות. אפשר לחסום לספר ספציפי, או להשאיר ריק כדי לחסום את כל הספרים.</p>
+    <p class="hint">סוגר חלון זמנים כדי שהמערכת לא תציע אותו ללקוחות. אפשר לחסום לספר ספציפי, או לבחור "כל הספרים".</p>
     <form id="blockForm">
-      <label for="client_slug">קוד עסק</label>
+      <label for="client_slug">קוד עסק <span class="req">*</span></label>
       <input type="text" id="client_slug" required autocomplete="off" placeholder="למשל salon-demo" />
 
-      <label for="pin">קוד PIN</label>
+      <label for="pin">קוד PIN <span class="req">*</span></label>
       <input type="text" id="pin" required autocomplete="off" inputmode="numeric" />
 
-      <label for="date">תאריך</label>
+      <label for="date">תאריך <span class="req">*</span></label>
       <input type="date" id="date" required />
 
-      <label for="start_time">משעה</label>
+      <label for="start_time">משעה <span class="req">*</span></label>
       <input type="time" id="start_time" required />
 
-      <label for="end_time">עד שעה</label>
+      <label for="end_time">עד שעה <span class="req">*</span></label>
       <input type="time" id="end_time" required />
 
-      <label for="staff_member">ספר ספציפי (אופציונלי)</label>
-      <input type="text" id="staff_member" autocomplete="off" placeholder="השאר ריק לחסימת כל הספרים" />
+      <label for="staff_member">ספר <span class="req">*</span></label>
+      <select id="staff_member" required>
+        <option value="" disabled selected>בחר...</option>
+        <option value="__all__">כל הספרים</option>
+        <option value="רועי אילון">רועי אילון</option>
+        <option value="מיכל בר">מיכל בר</option>
+        <option value="שירן כהן">שירן כהן</option>
+        <option value="איתי גולן">איתי גולן</option>
+      </select>
 
       <label for="reason">סיבה (אופציונלי)</label>
       <input type="text" id="reason" autocomplete="off" placeholder="למשל: חופש" />
@@ -66,13 +74,14 @@
       submitBtn.disabled = true;
       submitBtn.textContent = 'שולח...';
 
+      var staffValue = document.getElementById('staff_member').value;
       var body = {
         client_slug: document.getElementById('client_slug').value.trim(),
         pin: document.getElementById('pin').value.trim(),
         date: document.getElementById('date').value,
         start_time: document.getElementById('start_time').value,
         end_time: document.getElementById('end_time').value,
-        staff_member: document.getElementById('staff_member').value.trim() || null,
+        staff_member: staffValue === '__all__' ? null : staffValue,
         reason: document.getElementById('reason').value.trim() || null,
       };
 
