@@ -12,6 +12,7 @@ const { booking } = siteConfig.content
 
 const STEP_COUNT = 4
 const WEBHOOK_URL = import.meta.env.VITE_BOOKING_WEBHOOK_URL
+const WAITLIST_WEBHOOK_URL = import.meta.env.VITE_WAITLIST_WEBHOOK_URL
 
 function CloseIcon() {
   return (
@@ -53,6 +54,9 @@ export default function BookingModal({ isOpen, onClose, initialServiceId, initia
   const [submitError, setSubmitError] = useState('')
   const [appointmentCode, setAppointmentCode] = useState(null)
   const [bookedSlots, setBookedSlots] = useState([])
+  const [desiredWaitlistSlot, setDesiredWaitlistSlot] = useState(null)
+  const [waitlistOffered, setWaitlistOffered] = useState(false)
+  const [waitlistStatus, setWaitlistStatus] = useState(null)
 
   const days = useMemo(() => nextDays(7), [])
 
@@ -92,6 +96,9 @@ export default function BookingModal({ isOpen, onClose, initialServiceId, initia
     setSubmitting(false)
     setSubmitError('')
     setAppointmentCode(null)
+    setDesiredWaitlistSlot(null)
+    setWaitlistOffered(false)
+    setWaitlistStatus(null)
     setStep(initialServiceId && initialBarberId ? 2 : initialServiceId ? 1 : 0)
 
     dialogRef.current?.focus()
@@ -175,6 +182,47 @@ export default function BookingModal({ isOpen, onClose, initialServiceId, initia
     setConsent(false)
     setPhoneError('')
     setDone(false)
+    setAppointmentCode(null)
+    setDesiredWaitlistSlot(null)
+    setWaitlistOffered(false)
+    setWaitlistStatus(null)
+  }
+
+  async function joinWaitlist() {
+    if (!desiredWaitlistSlot) return
+    setWaitlistStatus('joining')
+    if (!WAITLIST_WEBHOOK_URL) {
+      setWaitlistStatus('demo')
+      setWaitlistOffered(true)
+      return
+    }
+    try {
+      const res = await fetch(WAITLIST_WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          client_slug: 'salon-demo',
+          service: service?.title,
+          staff_member: barber?.name,
+          date: desiredWaitlistSlot.date,
+          time: desiredWaitlistSlot.time,
+          name: name.trim(),
+          phone: phone.trim(),
+        }),
+      })
+      if (!res.ok) throw new Error(`waitlist webhook failed: ${res.status}`)
+      const data = await res.json().catch(() => ({}))
+      setWaitlistStatus(data.full ? 'full' : 'joined')
+    } catch {
+      setWaitlistStatus('error')
+    } finally {
+      setWaitlistOffered(true)
+    }
+  }
+
+  function declineWaitlist() {
+    setWaitlistOffered(true)
+    setWaitlistStatus(null)
   }
 
   return (
@@ -233,7 +281,21 @@ export default function BookingModal({ isOpen, onClose, initialServiceId, initia
 
         <div className="overflow-y-auto px-5 pb-5">
           {done ? (
-            <ConfirmationView service={service} barber={barber} dateInfo={dateInfo} time={time} name={name} code={appointmentCode} onReset={handleReset} onClose={onClose} />
+            <ConfirmationView
+              service={service}
+              barber={barber}
+              dateInfo={dateInfo}
+              time={time}
+              name={name}
+              code={appointmentCode}
+              onReset={handleReset}
+              onClose={onClose}
+              desiredWaitlistSlot={desiredWaitlistSlot}
+              waitlistOffered={waitlistOffered}
+              waitlistStatus={waitlistStatus}
+              onJoinWaitlist={joinWaitlist}
+              onDeclineWaitlist={declineWaitlist}
+            />
           ) : (
             <>
               {step === 0 && (
@@ -299,6 +361,7 @@ export default function BookingModal({ isOpen, onClose, initialServiceId, initia
                         onClick={() => {
                           setDate(d.key)
                           setTime(null)
+                          setDesiredWaitlistSlot(null)
                         }}
                         className={`flex shrink-0 flex-col items-center gap-1 border bg-white px-3.5 py-2.5 transition-colors ${
                           date === d.key ? 'border-primary bg-ink' : 'border-ink/10 hover:border-primary/50'
@@ -314,28 +377,55 @@ export default function BookingModal({ isOpen, onClose, initialServiceId, initia
                   <div role="radiogroup" aria-label={booking.timeStepLabel} className="mt-5 grid grid-cols-4 gap-2">
                     {TIME_SLOTS.map((t) => {
                       const isBooked = bookedSlots.includes(t)
+                      const isDesired = isBooked && desiredWaitlistSlot?.date === date && desiredWaitlistSlot?.time === t
                       return (
                         <button
                           key={t}
                           type="button"
                           role="radio"
-                          aria-checked={time === t}
-                          disabled={!date || isBooked}
-                          onClick={() => setTime(t)}
-                          className={`relative border py-2 text-sm transition-colors disabled:cursor-not-allowed ${
+                          aria-checked={isBooked ? isDesired : time === t}
+                          disabled={!date}
+                          onClick={() => {
+                            if (isBooked) {
+                              setDesiredWaitlistSlot((prev) => (prev?.date === date && prev?.time === t ? null : { date, time: t }))
+                            } else {
+                              setTime(t)
+                            }
+                          }}
+                          className={`relative border py-2 text-sm transition-colors disabled:cursor-not-allowed disabled:opacity-30 ${
                             isBooked
-                              ? 'border-ink/5 bg-ink/5 text-muted/50 line-through'
+                              ? isDesired
+                                ? 'border-primary bg-primary/10 text-ink font-semibold'
+                                : 'border-ink/5 bg-ink/5 text-muted hover:border-primary/40'
                               : time === t
                                 ? 'border-primary bg-primary text-ink font-semibold'
-                                : 'border-ink/10 bg-white text-ink disabled:opacity-30 hover:border-primary/50'
+                                : 'border-ink/10 bg-white text-ink hover:border-primary/50'
                           }`}
                         >
-                          {isBooked ? booking.bookedLabel : t}
+                          {isBooked ? (
+                            <span className="flex flex-col items-center gap-0.5 leading-none">
+                              <span className={isDesired ? '' : 'line-through'}>{t}</span>
+                              <span className="text-[10px] font-semibold">{booking.bookedLabel}</span>
+                            </span>
+                          ) : (
+                            t
+                          )}
                         </button>
                       )
                     })}
                   </div>
                   {!date && <p className="mt-3 text-xs text-muted">{booking.pickDateHint}</p>}
+                  {date && desiredWaitlistSlot && (
+                    <div className="mt-3 flex items-center justify-between gap-2 border border-primary/30 bg-primary/5 px-3 py-2 text-xs text-ink">
+                      <span>{fmt(booking.waitlist.chipLabel, { time: desiredWaitlistSlot.time })}</span>
+                      <button type="button" onClick={() => setDesiredWaitlistSlot(null)} className="font-semibold text-accent underline">
+                        {booking.waitlist.chipRemoveLabel}
+                      </button>
+                    </div>
+                  )}
+                  {date && !desiredWaitlistSlot && bookedSlots.length > 0 && (
+                    <p className="mt-3 text-xs text-muted">{booking.waitlist.takenHint}</p>
+                  )}
                 </div>
               )}
 
@@ -417,7 +507,24 @@ export default function BookingModal({ isOpen, onClose, initialServiceId, initia
   )
 }
 
-function ConfirmationView({ service, barber, dateInfo, time, name, code, onReset, onClose }) {
+function ConfirmationView({
+  service,
+  barber,
+  dateInfo,
+  time,
+  name,
+  code,
+  onReset,
+  onClose,
+  desiredWaitlistSlot,
+  waitlistOffered,
+  waitlistStatus,
+  onJoinWaitlist,
+  onDeclineWaitlist,
+}) {
+  const wl = booking.waitlist
+  const showPrompt = Boolean(desiredWaitlistSlot) && !waitlistOffered
+  const isJoining = waitlistStatus === 'joining'
   return (
     <div className="flex flex-col items-center py-4 text-center" role="status">
       <div className="flex h-16 w-16 items-center justify-center rounded-full border border-primary">
@@ -437,6 +544,54 @@ function ConfirmationView({ service, barber, dateInfo, time, name, code, onReset
       ) : (
         <p className="mt-1 text-xs text-muted">{booking.confirmation.demoNote}</p>
       )}
+
+      {showPrompt && (
+        <div className="mt-6 w-full border border-primary/30 bg-primary/5 p-4 text-right">
+          <p className="font-display text-base text-ink">{wl.promptTitle}</p>
+          <p className="mt-1 text-sm text-muted">{wl.promptQuestion}</p>
+          <p className="mt-2 text-xs text-ink/70">{fmt(wl.promptSummary, { service: service?.title, time: desiredWaitlistSlot.time })}</p>
+          <div className="mt-4 flex gap-3">
+            <button
+              type="button"
+              onClick={onJoinWaitlist}
+              disabled={isJoining}
+              className="flex-1 bg-primary py-2.5 text-sm font-semibold text-ink transition-transform hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {isJoining ? wl.joiningLabel : wl.yesLabel}
+            </button>
+            <button
+              type="button"
+              onClick={onDeclineWaitlist}
+              disabled={isJoining}
+              className="flex-1 border border-ink/15 py-2.5 text-sm text-ink/70 transition-colors hover:border-ink/30 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {wl.noLabel}
+            </button>
+          </div>
+        </div>
+      )}
+      {waitlistStatus === 'joined' && (
+        <div className="mt-6 w-full border border-primary/30 bg-primary/5 p-4 text-right">
+          <p className="font-display text-base text-ink">{wl.joinedTitle}</p>
+          <p className="mt-1 text-xs text-muted">{wl.joinedBody}</p>
+        </div>
+      )}
+      {waitlistStatus === 'demo' && (
+        <div className="mt-6 w-full border border-primary/30 bg-primary/5 p-4 text-right">
+          <p className="font-display text-base text-ink">{wl.joinedTitle}</p>
+          <p className="mt-1 text-xs text-muted">{wl.demoJoinedBody}</p>
+        </div>
+      )}
+      {waitlistStatus === 'full' && (
+        <div className="mt-6 w-full border border-ink/15 bg-ink/5 p-4 text-right">
+          <p className="font-display text-base text-ink">{wl.fullTitle}</p>
+          <p className="mt-1 text-xs text-muted">{wl.fullBody}</p>
+        </div>
+      )}
+      {waitlistStatus === 'error' && (
+        <p role="alert" className="mt-6 text-sm text-accent">{wl.errorBody}</p>
+      )}
+
       <div className="mt-8 flex w-full gap-3">
         <button
           type="button"
