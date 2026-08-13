@@ -18,22 +18,29 @@ const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY
 // mt_clients.id for this clone (salon-demo), from the multi-tenant n8n/Supabase migration.
 const MT_CLIENT_ID = '99eeef59-4def-40e4-9fe2-106a26e6f0ce'
 
-// Real availability from the mt_busy_slots view (confirmed appointments only,
-// no client details exposed). Falls back to the demo hash when the site
-// runs without a configured backend (white-label clone before hookup).
+// Real availability via the get_busy_slots RPC (SECURITY DEFINER, scoped to
+// this client_id server-side — direct mt_busy_slots access is blocked by RLS).
+// Falls back to the demo hash when the site runs without a configured
+// backend (white-label clone before hookup).
 export async function fetchBusySlots(dateKey, barberName) {
   if (!dateKey) return []
   if (!SUPABASE_URL || !SUPABASE_KEY) return getBookedSlots(dateKey)
-  const params = new URLSearchParams({ select: 'time', date: `eq.${dateKey}`, client_id: `eq.${MT_CLIENT_ID}` })
-  // barber.is.null = חסימה כלל-עסקית (בעל העסק סגר את כל הספרים לשעה הזו), חייבת להופיע
-  // לכל בחירת ספר, לא רק לספר ספציפי. ראו mt_blocked_slots + mt_busy_slots (10.8.2026).
-  if (barberName) params.set('or', `(barber.is.null,barber.eq.${barberName})`)
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/mt_busy_slots?${params}`, {
-    headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` },
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/get_busy_slots`, {
+    method: 'POST',
+    headers: {
+      apikey: SUPABASE_KEY,
+      Authorization: `Bearer ${SUPABASE_KEY}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ p_client_id: MT_CLIENT_ID, p_date_from: dateKey, p_date_to: dateKey }),
   })
-  if (!res.ok) throw new Error(`mt_busy_slots request failed: ${res.status}`)
+  if (!res.ok) throw new Error(`get_busy_slots request failed: ${res.status}`)
   const rows = await res.json()
-  return rows.map((row) => String(row.time).slice(0, 5))
+  // barber === null = חסימה כלל-עסקית (בעל העסק סגר את כל הספרים לשעה הזו), חייבת להופיע
+  // לכל בחירת ספר, לא רק לספר ספציפי. ראו mt_blocked_slots + mt_busy_slots (10.8.2026).
+  return rows
+    .filter((row) => !barberName || row.barber === null || row.barber === barberName)
+    .map((row) => String(row.time).slice(0, 5))
 }
 
 // Local-time key (YYYY-MM-DD). toISOString() is UTC-based, which shifts the
