@@ -211,7 +211,13 @@ export default function BookingModal({ isOpen, onClose, initialServiceId, initia
         }),
       })
       if (!res.ok) throw new Error(`waitlist webhook failed: ${res.status}`)
-      const data = await res.json().catch(() => ({}))
+      let data
+      try {
+        data = await res.json()
+      } catch {
+        throw new Error('waitlist webhook returned invalid JSON')
+      }
+      if (data.ok !== true) throw new Error('waitlist webhook did not confirm success')
       setWaitlistStatus(data.full ? 'full' : 'joined')
     } catch {
       setWaitlistStatus('error')
