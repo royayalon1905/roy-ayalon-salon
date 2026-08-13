@@ -4,6 +4,8 @@ import { siteConfig, fmt } from '../config/siteConfig'
 const { businessInfo, content } = siteConfig
 const { about } = content
 
+// עודכן 10.8.2026 — סקשן הצוות הועבר לרכיב נפרד Team.jsx (רצועה כהה, לפי הרפרנס).
+// הקובץ הזה חזר להיות רק טקסט "הסיפור שלנו", כפי שהיה במקור.
 export default function About() {
   return (
     <section id="about" className="bg-surface px-6 py-24 md:px-10 lg:py-32">

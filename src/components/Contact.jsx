@@ -9,7 +9,7 @@ const { form, info } = contact
 
 function AccessibilityIcon() {
   return (
-    <svg viewBox="0 0 20 20" className="h-4 w-4 text-primary" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <svg viewBox="0 0 20 20" className="h-4 w-4 text-primary-on-dark" fill="none" stroke="currentColor" strokeWidth="1.5">
       <circle cx="10" cy="3.5" r="1.5" />
       <path
         d="M10 6.5v4l-3.5 5M10 10.5l3.5 5M6 9h6.5M10 10.5V6.5"
@@ -55,7 +55,7 @@ export default function Contact() {
   }
 
   return (
-    <section id="contact" className="bg-surface px-6 py-24 md:px-10 lg:py-32">
+    <section id="contact" className="border-b-[3px] border-b-[#9fb8b0] bg-surface px-6 py-24 md:px-10 lg:py-32">
       <div className="mx-auto max-w-7xl">
         <span className="text-xs font-semibold tracking-[0.3em] text-accent">{contact.eyebrow}</span>
         <RazorReveal as="h2" className="mt-4 overflow-hidden font-display text-4xl text-ink sm:text-5xl">
@@ -147,17 +147,40 @@ export default function Contact() {
               />
             </div>
 
+            <div className="flex gap-3">
+              <a
+                href={`https://www.google.com/maps?q=${encodeURIComponent(businessInfo.mapQuery)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 border border-ink/15 bg-white px-4 py-2.5 text-center text-sm font-semibold text-ink transition-colors hover:border-primary"
+              >
+                {info.mapsButtonLabel}
+              </a>
+              <a
+                href={`https://waze.com/ul?q=${encodeURIComponent(businessInfo.mapQuery)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 border border-ink/15 bg-white px-4 py-2.5 text-center text-sm font-semibold text-ink transition-colors hover:border-primary"
+              >
+                {info.wazeButtonLabel}
+              </a>
+            </div>
+
             <div className="grid grid-cols-2 gap-6 border border-primary/20 bg-ink p-6">
-              <div>
-                <p className="text-xs tracking-widest text-primary">{info.addressLabel}</p>
+              <div className="col-span-2">
+                <p className="text-xs tracking-widest text-primary-on-dark">{info.addressLabel}</p>
                 <p className="mt-2 text-sm text-surface-dim">{businessInfo.address}</p>
               </div>
               <div>
-                <p className="text-xs tracking-widest text-primary">{info.phoneLabel}</p>
+                <p className="text-xs tracking-widest text-primary-on-dark">{info.phoneLabel}</p>
                 <p className="mt-2 text-sm text-surface-dim" dir="ltr">{businessInfo.phone}</p>
               </div>
+              <div>
+                <p className="text-xs tracking-widest text-primary-on-dark">{info.whatsappLabel}</p>
+                <p className="mt-2 text-sm text-surface-dim" dir="ltr">{businessInfo.whatsappPhone}</p>
+              </div>
               <div className="col-span-2">
-                <p className="text-xs tracking-widest text-primary">{info.hoursLabel}</p>
+                <p className="text-xs tracking-widest text-primary-on-dark">{info.hoursLabel}</p>
                 <ul className="mt-2 space-y-1 text-sm text-surface-dim">
                   {businessInfo.hours.map((h) => (
                     <li key={h.day} className="flex justify-between border-b border-muted/10 py-1 last:border-none">
@@ -170,7 +193,7 @@ export default function Contact() {
               <div className="col-span-2 flex items-start gap-2.5 border-t border-primary/20 pt-4">
                 <AccessibilityIcon />
                 <div>
-                  <p className="text-xs tracking-widest text-primary">{info.accessibilityLabel}</p>
+                  <p className="text-xs tracking-widest text-primary-on-dark">{info.accessibilityLabel}</p>
                   <p className="mt-1.5 text-sm text-surface-dim">{accessibilitySentence}</p>
                   {accessibility.notes && <p className="mt-1 text-sm text-surface-dim">{accessibility.notes}</p>}
                 </div>

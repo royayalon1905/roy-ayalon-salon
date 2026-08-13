@@ -301,7 +301,7 @@ export default function BookingModal({ isOpen, onClose, initialServiceId, initia
               {step === 0 && (
                 <ul role="radiogroup" aria-label={booking.serviceStepLabel} className="flex flex-col gap-2.5">
                   {servicesData.map((s) => (
-                    <li key={s.id}>
+                    <li key={s.id} role="presentation">
                       <button
                         type="button"
                         role="radio"
@@ -325,7 +325,7 @@ export default function BookingModal({ isOpen, onClose, initialServiceId, initia
               {step === 1 && (
                 <ul role="radiogroup" aria-label={booking.staffStepLabel} className="flex flex-col gap-2.5">
                   {staffData.map((b) => (
-                    <li key={b.id}>
+                    <li key={b.id} role="presentation">
                       <button
                         type="button"
                         role="radio"
@@ -398,7 +398,7 @@ export default function BookingModal({ isOpen, onClose, initialServiceId, initia
                                 ? 'border-primary bg-primary/10 text-ink font-semibold'
                                 : 'border-ink/5 bg-ink/5 text-muted hover:border-primary/40'
                               : time === t
-                                ? 'border-primary bg-primary text-ink font-semibold'
+                                ? 'border-primary bg-primary text-white font-semibold'
                                 : 'border-ink/10 bg-white text-ink hover:border-primary/50'
                           }`}
                         >
@@ -495,7 +495,7 @@ export default function BookingModal({ isOpen, onClose, initialServiceId, initia
                 type="button"
                 onClick={goNext}
                 disabled={!canNext[step] || submitting}
-                className="mt-6 w-full bg-primary py-3.5 text-sm font-bold text-ink transition-transform hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0"
+                className="mt-6 w-full bg-primary py-3.5 text-sm font-bold text-white transition-transform hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0"
               >
                 {step === 3 ? (submitting ? booking.submittingLabel : booking.confirmLabel) : booking.nextLabel}
               </button>
@@ -555,7 +555,7 @@ function ConfirmationView({
               type="button"
               onClick={onJoinWaitlist}
               disabled={isJoining}
-              className="flex-1 bg-primary py-2.5 text-sm font-semibold text-ink transition-transform hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
+              className="flex-1 bg-primary py-2.5 text-sm font-semibold text-white transition-transform hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {isJoining ? wl.joiningLabel : wl.yesLabel}
             </button>
@@ -596,7 +596,7 @@ function ConfirmationView({
         <button
           type="button"
           onClick={onReset}
-          className="flex-1 border border-primary py-3 text-sm font-semibold text-primary transition-colors hover:bg-primary hover:text-ink"
+          className="flex-1 border border-primary py-3 text-sm font-semibold text-primary transition-colors hover:bg-primary hover:text-white"
         >
           {booking.confirmation.anotherLabel}
         </button>

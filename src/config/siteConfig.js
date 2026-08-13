@@ -1,17 +1,21 @@
 export const siteConfig = {
   businessInfo: {
-    shortName: 'רועי אילון',
+    shortName: 'סטודיו עלה',
     category: 'עיצוב שיער',
+    city: 'חולון',
+    // עודכן 10.8.2026 — כותרת Hero חדשה (רפרנס: layout תמונה+טקסט זה-לצד-זה, לא הכותרת הגדולה הישנה).
+    heroHeadline: 'שיער במיטבו,\nבידיים הנכונות',
     heroEyebrow: 'סטודיו פרימיום לעיצוב שיער',
-    heroSubtitle: 'לא רודפים אחרי טרנדים. יוצרים שיער שמספר את הסיפור שלך.',
-    footerTagline: 'סטודיו לעיצוב שיער בלב תל אביב. צבע, בליאז׳, החלקות ותספורות — מאז 2012.',
+    heroSubtitle: 'תספורות, צבע, פן ועיצוב — צוות מקצועי שמתאים לך בדיוק את מה שאת/ה צריך/ה.',
+    footerTagline: 'סטודיו לעיצוב שיער בחולון. צבע, בליאז׳, החלקות ותספורות — מאז 2012.',
     foundedYear: 2012,
-    phone: '03-1234567',
-    address: 'שינקין 22, תל אביב',
-    mapQuery: 'Sheinkin Street Tel Aviv',
+    phone: '03-555-1234',
+    whatsappPhone: '052-123-4567',
+    address: 'מסילת ברזל 45, חולון',
+    mapQuery: 'Mesilat Barzel 45 Holon',
     hours: [
-      { day: 'ראשון – חמישי', time: '09:00 – 21:00' },
-      { day: 'שישי', time: '08:00 – 15:00' },
+      { day: 'ראשון – חמישי', time: '09:00 – 19:00' },
+      { day: 'שישי', time: '08:30 – 14:00' },
       { day: 'שבת', time: 'סגור' },
     ],
     stats: [
@@ -31,15 +35,18 @@ export const siteConfig = {
     },
   },
 
+  // עודכן 10.8.2026 — סדר וניסוח הקישורים לפי הרפרנס (טיפולים | לפני ואחרי | הצוות | שאלות | לקוחות,
+  // מסודר כאן מהקרוב-ללוגו (ימין) לקרוב-לכפתור-הקביעה (שמאל), כי ה-DOM ב-RTL מציג ילד ראשון בימין).
   nav: {
     ariaLabel: 'ניווט ראשי',
     links: [
-      { href: '#services', label: 'שירותים' },
-      { href: '#gallery', label: 'עבודות' },
-      { href: '#testimonials', label: 'לקוחות ממליצות' },
-      { href: '#contact', label: 'צור קשר' },
+      { href: '#testimonials', label: 'לקוחות' },
+      { href: '#faq', label: 'שאלות' },
+      { href: '#team', label: 'הצוות' },
+      { href: '#gallery', label: 'לפני ואחרי' },
+      { href: '#services', label: 'טיפולים' },
     ],
-    bookCta: 'קבעו תור',
+    bookCta: 'קביעת תור',
     menuOpenLabel: 'פתיחת תפריט',
     menuCloseLabel: 'סגירת תפריט',
   },
@@ -51,7 +58,20 @@ export const siteConfig = {
       groupLabel: 'קישורים מהירים',
       whatsappLabel: 'שליחת הודעת וואטסאפ',
       whatsappMessage: 'היי, ראיתי את האתר ורוצה לשמוע פרטים',
-      accessibilityLabel: 'הצהרת נגישות',
+      accessibilityLabel: 'תפריט נגישות',
+    },
+    // חדש 10.8.2026 — ווידג'ט נגישות אמיתי (במקום כפתור שהיה רק לינק להצהרה).
+    accessibilityWidget: {
+      title: 'נגישות',
+      closeLabel: 'סגירת תפריט נגישות',
+      fontSizeLabel: 'גודל טקסט',
+      fontSizeButton: 'הגדלת טקסט (A+)',
+      contrastLabel: 'ניגודיות גבוהה',
+      grayscaleLabel: 'גווני אפור',
+      stopAnimationsLabel: 'עצירת אנימציות',
+      highlightLinksLabel: 'הדגשת קישורים',
+      resetLabel: 'איפוס הגדרות',
+      statementLinkLabel: 'הצהרת נגישות מלאה',
     },
     hero: {
       ariaLabel: 'כותרת ראשית',
@@ -63,6 +83,30 @@ export const siteConfig = {
       title: 'מחירון שירותים',
       staffTabsLabel: 'בחירת מעצב/ת',
     },
+    bookingIntro: {
+      eyebrow: 'בואו נקבע',
+      title: 'קביעת תור',
+      subtitle: 'מלאו פרטים ונחזור אליכם לאישור תוך שעה בשעות הפעילות.',
+      nameLabel: 'שם מלא',
+      namePlaceholder: 'ישראל ישראלי',
+      phoneLabel: 'טלפון',
+      phonePlaceholder: '0501234567',
+      serviceLabel: 'טיפול',
+      serviceAny: 'לא משנה לי',
+      staffLabel: 'ספר/ית',
+      staffAny: 'לא משנה לי',
+      dateLabel: 'תאריך מועדף',
+      timeLabel: 'שעה מועדפת',
+      timeOptions: [
+        { value: 'morning', label: 'בוקר (9:00–12:00)' },
+        { value: 'noon', label: 'צהריים (12:00–16:00)' },
+        { value: 'evening', label: 'ערב (16:00–19:00)' },
+      ],
+      notesLabel: 'הערות (לא חובה)',
+      notesPlaceholder: 'משהו שכדאי שנדע מראש?',
+      submitLabel: 'שליחת בקשה לתור',
+      helperNote: 'שליחת הטופס פותחת את מסך קביעת התור המלא, עם הפרטים שבחרתם כבר ממולאים.',
+    },
     serviceCard: {
       bookLabel: 'להזמנה',
       badges: { women: 'נשים', men: 'גברים' },
@@ -70,6 +114,10 @@ export const siteConfig = {
     gallery: {
       eyebrow: 'תיק עבודות',
       title: 'כל תמונה מדברת בעד עצמה',
+    },
+    team: {
+      eyebrow: 'הצוות שלנו',
+      title: 'האנשים מאחורי כל תספורת',
     },
     about: {
       eyebrow: 'הסיפור שלנו',
@@ -88,6 +136,32 @@ export const siteConfig = {
       carouselLabel: 'קרוסלת המלצות לקוחות',
       slideLabel: 'המלצה {current} מתוך {total}',
       positionLabel: 'מוצגת המלצה {current} מתוך {total}',
+    },
+    faq: {
+      eyebrow: 'לקוחות שואלים',
+      title: 'שאלות נפוצות',
+      items: [
+        {
+          q: 'צריך לקבוע תור מראש?',
+          a: 'מומלץ מאוד, במיוחד לסופי שבוע ולטיפולי צבע — כדי שנוכל להקצות לכם את הזמן הנכון ולוודא שהספר/ית הרצוי/ה פנוי/ה. אפשר גם בלי, אבל אז זמן ההמתנה עשוי להיות ארוך יותר.',
+        },
+        {
+          q: 'כמה זמן לוקח טיפול צבע?',
+          a: 'תלוי בטיפול הספציפי ובאורך/צפיפות השיער — בין 90 ל-150 דקות בממוצע. נעדכן אתכם בזמן המשוער המדויק כבר בקביעת התור.',
+        },
+        {
+          q: 'יש חניה באזור?',
+          a: 'כן, יש חניה ציבורית סמוכה לסטודיו. אם יש קושי למצוא חניה בשעות עומס, אפשר להתקשר אלינו ונכוון אתכם.',
+        },
+        {
+          q: 'אתם מסתפרים ילדים?',
+          a: 'בהחלט — יש לנו ניסיון וסבלנות עם ילדים מגיל 3 ומעלה. מומלץ לציין זאת בהערות בעת קביעת התור כדי שנתכנן זמן מתאים.',
+        },
+        {
+          q: 'מה מדיניות הביטולים?',
+          a: 'נשמח לעדכון על ביטול או שינוי מועד לפחות 4 שעות מראש, כדי שנוכל להציע את הזמן ללקוח/ה אחר/ת. ביטולים באיחור רב עשויים להשפיע על זמינות התור הבא שלכם.',
+        },
+      ],
     },
     contact: {
       eyebrow: 'בואו לבקר',
@@ -111,6 +185,9 @@ export const siteConfig = {
         mapTitle: 'מיקום הסטודיו על מפה',
         addressLabel: 'כתובת',
         phoneLabel: 'טלפון',
+        whatsappLabel: 'וואטסאפ',
+        mapsButtonLabel: 'Google Maps',
+        wazeButtonLabel: 'Waze',
         hoursLabel: 'שעות פתיחה',
         accessibilityLabel: 'נגישות פיזית במקום',
         accessibilityWheelchairYes: 'המקום נגיש לכיסא גלגלים — כניסה ללא מדרגות',
@@ -282,24 +359,16 @@ export const siteConfig = {
     },
   },
 
+  // עודכן 10.8.2026 — מחירון שטוח לפי מפרט העיצוב החדש (5 טיפולים קבועים, לא תלויי ספר/ית).
+  // שדה barberId הוסר בכוונה: הבחירה בין טיפול לספר/ית עצמאית לגמרי ב-BookingModal (שני שלבים נפרדים).
   servicesData: [
     {
-      id: 'color',
-      title: 'צבע שיער, גוונים ובליאז׳',
-      price: '280₪',
-      duration: '90 דק׳',
-      desc: 'מגוון עד בליאז׳ טבעי - כל גוון נבנה במיוחד בשבילך, לפי גוון העור ומה שבא לך להרגיש.',
-      audience: 'women',
-      barberId: 'michal',
-    },
-    {
-      id: 'keratin',
-      title: 'החלקות וקרטין',
-      price: '450₪',
-      duration: '120 דק׳',
-      desc: 'טיפול שמחזיר לשיער חלקות, ברק ושליטה - בלי לוותר על התנועה הטבעית שלו.',
-      audience: 'women',
-      barberId: 'shiran',
+      id: 'mens-cut',
+      title: 'תספורת גברים',
+      price: '80₪',
+      duration: '30 דק׳',
+      desc: 'תספורת נקייה ומדויקת, עם גימור על קו השיער שנשאר חד גם שבועות אחרי.',
+      audience: 'men',
     },
     {
       id: 'womens-cut',
@@ -308,62 +377,68 @@ export const siteConfig = {
       duration: '50 דק׳',
       desc: 'תספורת שמתחילה בשיחה על מה שאת רוצה, וממשיכה בגזירה מדויקת לפי מבנה הפנים.',
       audience: 'women',
-      barberId: 'roi',
+    },
+    {
+      id: 'color',
+      title: 'צבע שיער, גוונים ובליאז׳',
+      price: 'מ-250₪',
+      duration: '90 דק׳',
+      desc: 'מגוון עד בליאז׳ טבעי - כל גוון נבנה במיוחד בשבילך, לפי גוון העור ומה שבא לך להרגיש.',
     },
     {
       id: 'blowdry',
-      title: 'פן ועיצוב לאירועים',
+      title: 'פן ועיצוב',
       price: '120₪',
       duration: '45 דק׳',
       desc: 'תמיד מגיע בול בזמן. פן חלק ליומיום, או עיצוב מיוחד לאירוע שלא שוכחים.',
-      audience: 'women',
-      barberId: 'roi',
     },
     {
-      id: 'extensions',
-      title: 'תוספות שיער',
-      price: '650₪',
-      duration: '150 דק׳',
-      desc: 'אורך ונפח שנראים אמיתיים לגמרי. מתאימים לצבע ולמרקם השיער שלך אחד לאחד.',
-      audience: 'women',
-      barberId: 'michal',
-    },
-    {
-      id: 'mens-cut',
-      title: 'תספורת גברים',
-      price: '110₪',
-      duration: '35 דק׳',
-      desc: 'תספורת נקייה ומדויקת, עם גימור על קו השיער שנשאר חד גם שבועות אחרי.',
-      audience: 'men',
-      barberId: 'itay',
+      id: 'wash',
+      title: 'חפיפה',
+      price: '90₪',
+      duration: '20 דק׳',
+      desc: 'חפיפה מרעננת עם עיסוי קרקפת קצר - טיפול עצמאי, או תוספת לכל שירות אחר.',
     },
   ],
 
   staffData: [
-    { id: 'roi', name: 'רועי אילון', role: 'מייסד ומעצב שיער ראשי' },
+    { id: 'daniel', name: 'דניאל שגיא', role: 'מייסד ומעצב שיער ראשי' },
     { id: 'michal', name: 'מיכל בר', role: 'מומחית צבע ובליאז׳' },
     { id: 'shiran', name: 'שירן כהן', role: 'מומחית החלקות וקרטין' },
     { id: 'itay', name: 'איתי גולן', role: 'תספורות גברים' },
   ],
 
   theme: {
+    // עודכן 10.8.2026 — פלטת העיצוב החדש (מספרת אלון, Claude Design).
+    // חייב להישאר תואם ל-@theme ב-src/index.css — applyTheme() דורס את המשתנים האלה
+    // בזמן ריצה על גבי מה שכתוב ב-CSS, אז שני המקומות חייבים להיות מסונכרנים ידנית.
     colors: {
-      ink: '#2b221d',
-      inkLight: '#3a2e27',
-      surface: '#f8f1e7',
-      surfaceDim: '#ece0d0',
-      primary: '#d9bd86',
-      primaryOnDark: '#f0e2be',
-      accent: '#aa543c',
-      muted: '#786b5f',
-      mutedOnDark: '#9c8f82',
+      ink: '#1e2b26',
+      inkLight: '#22302b',
+      surface: '#fafaf8',
+      surfaceDim: '#eef5f2',
+      primary: '#3e7c6f',
+      primaryOnDark: '#9fc4b8',
+      accent: '#2c5a50',
+      muted: '#5a6862',
+      mutedOnDark: '#8a958f',
     },
     fonts: {
       display: "'Frank Ruhl Libre', serif",
-      body: "'Assistant', sans-serif",
+      body: "'Heebo', sans-serif",
     },
+    // הנפשת Hero — 4 סצנות מתחלפות (במקום תמונה סטטית אחת).
+    // heroImage/heroImageAlt נשארים כ-fallback סטטי (למשל og:image), לא בשימוש ב-Hero עצמו יותר.
     heroImage: 'https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=1920&h=1280&fit=crop&auto=format&q=80',
     heroImageAlt: 'פנים הסטודיו - כיסאות עיצוב שיער וסביבת עבודה',
+    // TODO placeholder: כל scene הוא "משבצת" גרדיאנט זמנית עד שיוחלף בתמונת סטודיו אמיתית.
+    heroAnimationMs: 5000, // קצב החלפה, 2000-8000 לפי המפרט
+    heroScenes: [
+      { id: 'cut', label: 'גזירה', from: '#1e2b26', to: '#3e7c6f' },
+      { id: 'blowdry', label: 'פן', from: '#2c5a50', to: '#5a6862' },
+      { id: 'color', label: 'צבע', from: '#22302b', to: '#2c5a50' },
+      { id: 'wash', label: 'חפיפה', from: '#3e7c6f', to: '#1e2b26' },
+    ],
   },
 }
 

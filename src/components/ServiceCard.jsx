@@ -44,7 +44,7 @@ export default function ServiceCard({ service, onBook }) {
         <button
           type="button"
           onClick={onBook}
-          className="rounded-full border border-primary px-4 py-1.5 text-xs font-semibold text-primary transition-colors hover:bg-primary hover:text-ink"
+          className="rounded-full border border-primary px-4 py-1.5 text-xs font-semibold text-primary transition-colors hover:bg-primary hover:text-white"
         >
           {serviceCard.bookLabel}
         </button>

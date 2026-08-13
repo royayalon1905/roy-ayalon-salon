@@ -1,64 +1,54 @@
 import RazorReveal from './RazorReveal'
 import { siteConfig } from '../config/siteConfig'
 
-const { businessInfo, theme, content } = siteConfig
+const { businessInfo, content } = siteConfig
 const { hero } = content
 
-export default function Hero() {
+// עודכן 10.8.2026 — נבנה מחדש לגמרי לפי הרפרנס האמיתי מ-Claude Design: layout
+// תמונה+טקסט זה-לצד-זה (לא קרוסלת רקע מלא כמו שהיה קודם). התמונה עדיין "משבצת"
+// גרדיאנט placeholder — לא תמונה אמיתית של הסטודיו. TODO: להחליף בתמונה אמיתית
+// לפני מעבר ללקוח אמיתי (ראו גם הערה על אותו רעיון ב-src/data/gallery.js).
+export default function Hero({ onBook }) {
   return (
-    <section id="top" className="relative flex min-h-dvh flex-col justify-center overflow-hidden" aria-label={hero.ariaLabel}>
-      <img
-        src={theme.heroImage}
-        alt={theme.heroImageAlt}
-        className="absolute inset-0 h-full w-full object-cover saturate-[0.35]"
-      />
-      <div className="absolute inset-0 bg-ink/50" aria-hidden="true" />
-      <div
-        className="absolute inset-0"
-        style={{
-          background:
-            'linear-gradient(to top, color-mix(in srgb, var(--color-ink) 45%, transparent) 0%, transparent 30%), color-mix(in srgb, var(--color-ink) 30%, transparent)',
-        }}
-        aria-hidden="true"
-      />
-
-      <div className="relative z-10 mx-auto flex w-full max-w-2xl flex-col px-6 py-32 text-center">
-        <div className="mb-8 flex items-center justify-center gap-4 sm:gap-5">
-          <span className="h-px max-w-[45px] flex-1 bg-primary sm:max-w-[75px] lg:max-w-[95px]" />
-          <p className="whitespace-nowrap text-sm tracking-[0.25em] text-primary-on-dark sm:text-base">{businessInfo.heroEyebrow}</p>
-          <span className="h-px max-w-[45px] flex-1 bg-primary sm:max-w-[75px] lg:max-w-[95px]" />
+    <section id="top" className="border-b-[3px] border-b-[#9fb8b0] bg-surface px-6 pb-20 pt-32 md:px-10 lg:pb-28 lg:pt-40" aria-label={hero.ariaLabel}>
+      <div className="mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-2 lg:gap-16">
+        <div className="relative order-1 aspect-[4/3] overflow-hidden lg:order-none">
+          <div
+            className="h-full w-full"
+            style={{ background: 'linear-gradient(135deg, #9fc4b8 0%, #3e7c6f 55%, #1e2b26 100%)' }}
+            role="img"
+            aria-label="תמונת פתיחה מהסטודיו"
+          />
+          <span className="absolute bottom-4 right-4 bg-ink/80 px-3 py-1.5 text-xs font-semibold tracking-wide text-surface-dim">
+            פן ועיצוב
+          </span>
         </div>
 
-        <RazorReveal as="h1" className="mb-6 overflow-hidden font-display text-5xl font-medium leading-tight tracking-wide text-surface sm:text-6xl lg:text-7xl">
-          {businessInfo.shortName} {businessInfo.category}
-        </RazorReveal>
+        <div className="order-2 text-center lg:order-none lg:text-right">
+          <span className="text-xs font-semibold tracking-[0.3em] text-accent">
+            {businessInfo.shortName} · {businessInfo.city}
+          </span>
+          <RazorReveal as="h1" className="mx-auto mt-4 overflow-hidden font-display text-4xl leading-tight text-ink sm:text-5xl lg:mx-0 lg:text-6xl">
+            {businessInfo.heroHeadline.split('\n').map((line, i) => (
+              <span key={i} className="block">
+                {line}
+              </span>
+            ))}
+          </RazorReveal>
+          <p className="mx-auto mt-6 max-w-md text-base leading-relaxed text-muted lg:mx-0">{businessInfo.heroSubtitle}</p>
 
-        <RazorReveal delay={140} as="p" className="mb-12 overflow-hidden text-sm font-light tracking-widest text-surface">
-          {businessInfo.heroSubtitle}
-        </RazorReveal>
-
-        <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
-          <a
-            href="#services"
-            className="flex h-[54px] w-full min-w-[220px] items-center justify-center bg-primary text-sm font-semibold tracking-wide text-ink transition-opacity hover:opacity-90 sm:w-auto"
-          >
-            {hero.ctaBook}
-          </a>
-          <a
-            href="#services"
-            className="flex h-[54px] w-full min-w-[220px] items-center justify-center border-2 border-surface/70 text-sm font-semibold tracking-wide text-surface transition-all hover:bg-surface hover:text-ink sm:w-auto"
-          >
-            {hero.ctaPrices}
-          </a>
-        </div>
-
-        <div className="mt-24 grid grid-cols-3 gap-4 border-t border-surface/20 pt-10">
-          {businessInfo.stats.map(({ num, label }) => (
-            <div key={label} className="text-center">
-              <p className="font-display text-2xl font-light text-primary">{num}</p>
-              <p className="mt-2 text-sm text-surface-dim">{label}</p>
-            </div>
-          ))}
+          <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row lg:justify-start">
+            <button
+              type="button"
+              onClick={() => onBook?.()}
+              className="flex h-[52px] w-full min-w-[200px] items-center justify-center bg-primary text-sm font-semibold tracking-wide text-white transition-opacity hover:opacity-90 sm:w-auto"
+            >
+              {hero.ctaBook}
+            </button>
+            <a href="#services" className="text-sm font-semibold tracking-wide text-ink underline-offset-4 hover:underline">
+              {hero.ctaPrices} ←
+            </a>
+          </div>
         </div>
       </div>
     </section>

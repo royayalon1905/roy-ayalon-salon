@@ -1,55 +1,30 @@
 import { siteConfig } from '../config/siteConfig'
 
-const { businessInfo, nav, content } = siteConfig
+const { businessInfo, content } = siteConfig
 const { footer } = content
 
+// עודכן 10.8.2026 — תוקן באג ניגודיות אמיתי שנמצא ע"י בדיקת axe-core: הפוטר כהה
+// (bg-ink-light) אבל השתמש בצבעי טקסט text-muted/text-primary (מיועדים לרקע בהיר) —
+// עכשיו text-muted-on-dark/text-primary-on-dark, כמו שכבר נעשה נכון בשאר האתר.
+// פושט 10.8.2026 — לפי בקשת רועי: הוסרו עמודת "ניווט מהיר" (כפילות של הנאבבר)
+// ועמודת "רשתות חברתיות" (businessInfo.socials לא בשימוש בשום מקום אחר, נבדק לפני ההסרה).
+// עכשיו שורה אחת פשוטה: שם המותג בצד אחד, זכויות יוצרים + קישורים משפטיים בצד שני —
+// תואם את הפשטות של הרפרנס.
 export default function Footer() {
   return (
-    <footer className="bg-ink-light px-6 pb-8 pt-16 md:px-10">
-      <div className="mx-auto max-w-7xl">
-        <div className="grid grid-cols-1 gap-10 border-b border-muted/10 pb-10 sm:grid-cols-3">
-          <div>
-            <p className="font-display text-2xl text-surface"><span className="font-light">{businessInfo.shortName}</span> <span className="text-primary">·</span> {businessInfo.category}</p>
-            <p className="mt-3 max-w-xs text-sm leading-relaxed text-muted">
-              {businessInfo.footerTagline}
-            </p>
-          </div>
+    <footer className="bg-ink-light px-6 py-8 md:px-10">
+      <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 text-sm sm:flex-row">
+        <p className="font-display text-lg text-surface">
+          <span className="font-light">{businessInfo.shortName}</span>{' '}
+          <span className="text-primary-on-dark">·</span> {businessInfo.category}
+        </p>
 
-          <nav aria-label={footer.quickNavTitle}>
-            <p className="text-xs tracking-widest text-primary">{footer.quickNavTitle}</p>
-            <ul className="mt-3 space-y-2">
-              {nav.links.map((l) => (
-                <li key={l.href}>
-                  <a href={l.href} className="text-sm text-surface-dim hover:text-primary">{l.label}</a>
-                </li>
-              ))}
-              <li>
-                <a href="#services" className="text-sm text-surface-dim hover:text-primary">
-                  {footer.bookingLinkLabel}
-                </a>
-              </li>
-            </ul>
-          </nav>
-
-          <div>
-            <p className="text-xs tracking-widest text-primary">{footer.socialTitle}</p>
-            <ul className="mt-3 space-y-2">
-              {businessInfo.socials.map((s) => (
-                <li key={s.label}>
-                  <a href={s.href} className="text-sm text-surface-dim hover:text-primary">{s.label}</a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-
-        <div className="flex flex-col items-center justify-between gap-3 pt-6 text-xs text-muted sm:flex-row">
-          <p>© {new Date().getFullYear()} {businessInfo.shortName} - {businessInfo.category}. {footer.rightsNote}</p>
+        <div className="flex flex-col items-center gap-3 text-xs text-surface-dim sm:flex-row">
+          <p>© {new Date().getFullYear()} {businessInfo.shortName}. {footer.rightsNote}</p>
           <nav aria-label={footer.legalTitle} className="flex gap-4">
-            <a href={content.legal.accessibility.path} className="hover:text-primary">{footer.accessibilityLinkLabel}</a>
-            <a href={content.legal.privacy.path} className="hover:text-primary">{footer.privacyLinkLabel}</a>
+            <a href={content.legal.accessibility.path} className="text-surface-dim hover:text-primary-on-dark">{footer.accessibilityLinkLabel}</a>
+            <a href={content.legal.privacy.path} className="text-surface-dim hover:text-primary-on-dark">{footer.privacyLinkLabel}</a>
           </nav>
-          <p>{footer.demoNote}</p>
         </div>
       </div>
     </footer>

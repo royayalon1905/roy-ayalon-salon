@@ -3,8 +3,10 @@ import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import Services from './components/Services'
 import Gallery from './components/Gallery'
-import About from './components/About'
+import BookingIntro from './components/BookingIntro'
+import Team from './components/Team'
 import Testimonials from './components/Testimonials'
+import FAQ from './components/FAQ'
 import Contact from './components/Contact'
 import Footer from './components/Footer'
 import BookingModal from './components/BookingModal'
@@ -34,17 +36,19 @@ export default function App() {
     <div className="min-h-dvh bg-surface font-body">
       <a
         href="#main"
-        className="sr-only focus:not-sr-only focus:absolute focus:right-4 focus:top-4 focus:z-[100] focus:bg-primary focus:px-4 focus:py-2 focus:font-semibold focus:text-ink"
+        className="sr-only focus:not-sr-only focus:absolute focus:right-4 focus:top-4 focus:z-[100] focus:bg-primary focus:px-4 focus:py-2 focus:font-semibold focus:text-white"
       >
         {siteConfig.content.skipToMain}
       </a>
-      <Navbar />
+      <Navbar onBook={() => openBooking()} />
       <main id="main">
-        <Hero />
+        <Hero onBook={() => openBooking()} />
         <Services onBook={openBooking} />
+        <BookingIntro onBook={openBooking} />
         <Gallery />
-        <About />
+        <Team />
         <Testimonials />
+        <FAQ />
         <Contact />
       </main>
       <Footer />
