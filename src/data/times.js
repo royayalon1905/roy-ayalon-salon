@@ -18,12 +18,18 @@ const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY
 // mt_clients.id for this clone (salon-demo), from the multi-tenant n8n/Supabase migration.
 const MT_CLIENT_ID = '99eeef59-4def-40e4-9fe2-106a26e6f0ce'
 
+// TODO(סימולציית-מכירות): כל עוד true, שום קריאת רשת אמיתית לא יוצאת מתהליך ההזמנה —
+// גם אם VITE_SUPABASE_URL/KEY מוגדרים ב-.env. כדי להחזיר זמינות אמיתית: להפוך ל-false.
+const SIMULATION_MODE = true
+const SIMULATED_BUSY_SLOTS = ['10:00', '14:00', '17:00']
+
 // Real availability via the get_busy_slots RPC (SECURITY DEFINER, scoped to
 // this client_id server-side — direct mt_busy_slots access is blocked by RLS).
 // Falls back to the demo hash when the site runs without a configured
 // backend (white-label clone before hookup).
 export async function fetchBusySlots(dateKey, barberName) {
   if (!dateKey) return []
+  if (SIMULATION_MODE) return SIMULATED_BUSY_SLOTS
   if (!SUPABASE_URL || !SUPABASE_KEY) return getBookedSlots(dateKey)
   const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/get_busy_slots`, {
     method: 'POST',

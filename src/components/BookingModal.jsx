@@ -7,12 +7,22 @@ import { useBodyScrollLock } from '../hooks/useBodyScrollLock'
 import { useFocusTrap } from '../hooks/useFocusTrap'
 import ChevronIcon from './ChevronIcon'
 
-const { servicesData, staffData } = siteConfig
+const { servicesData, staffData, slug } = siteConfig
 const { booking } = siteConfig.content
 
 const STEP_COUNT = 4
 const WEBHOOK_URL = import.meta.env.VITE_BOOKING_WEBHOOK_URL
 const WAITLIST_WEBHOOK_URL = import.meta.env.VITE_WAITLIST_WEBHOOK_URL
+
+// TODO(סימולציית-מכירות): כל עוד true, שום קריאת רשת אמיתית לא יוצאת מתהליך ההזמנה —
+// לא ל-n8n webhook, גם אם VITE_BOOKING_WEBHOOK_URL/VITE_WAITLIST_WEBHOOK_URL מוגדרים ב-.env.
+// כדי להחזיר חיווט אמיתי: להפוך ל-false.
+const SIMULATION_MODE = true
+const SIMULATION_DELAY_MS = 900
+
+function fakeAppointmentCode() {
+  return String(1000 + Math.floor(Math.random() * 9000))
+}
 
 function CloseIcon() {
   return (
@@ -119,12 +129,19 @@ export default function BookingModal({ isOpen, onClose, initialServiceId, initia
   async function submitBooking() {
     setSubmitting(true)
     setSubmitError('')
+    if (SIMULATION_MODE) {
+      await new Promise((resolve) => setTimeout(resolve, SIMULATION_DELAY_MS))
+      setAppointmentCode(fakeAppointmentCode())
+      setDone(true)
+      setSubmitting(false)
+      return
+    }
     try {
       const res = await fetch(WEBHOOK_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          client_slug: 'salon-demo',
+          client_slug: slug,
           service_id: serviceId,
           service: service?.title,
           barber_id: barberId,
@@ -191,6 +208,12 @@ export default function BookingModal({ isOpen, onClose, initialServiceId, initia
   async function joinWaitlist() {
     if (!desiredWaitlistSlot) return
     setWaitlistStatus('joining')
+    if (SIMULATION_MODE) {
+      await new Promise((resolve) => setTimeout(resolve, SIMULATION_DELAY_MS))
+      setWaitlistStatus('demo')
+      setWaitlistOffered(true)
+      return
+    }
     if (!WAITLIST_WEBHOOK_URL) {
       setWaitlistStatus('demo')
       setWaitlistOffered(true)
@@ -201,7 +224,7 @@ export default function BookingModal({ isOpen, onClose, initialServiceId, initia
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          client_slug: 'salon-demo',
+          client_slug: slug,
           service: service?.title,
           staff_member: barber?.name,
           date: desiredWaitlistSlot.date,

@@ -1,4 +1,7 @@
 export const siteConfig = {
+  // מזהה הלקוח (mt_clients.slug) לשימוש בקריאות ל-webhooks של n8n (הזמנה, waitlist).
+  slug: 'salon-demo',
+
   businessInfo: {
     shortName: 'סטודיו עלה',
     category: 'עיצוב שיער',
