@@ -49,6 +49,15 @@ function UserIcon() {
   )
 }
 
+function ClockIcon() {
+  return (
+    <svg viewBox="0 0 20 20" className="h-5 w-5 shrink-0" fill="none" stroke="var(--color-warn)" strokeWidth="1.6">
+      <circle cx="10" cy="10" r="7.5" />
+      <path d="M10 6v4.5l3 2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
 export default function BookingModal({ isOpen, onClose, initialServiceId, initialBarberId }) {
   const [step, setStep] = useState(0)
   const [serviceId, setServiceId] = useState(null)
@@ -67,6 +76,9 @@ export default function BookingModal({ isOpen, onClose, initialServiceId, initia
   const [desiredWaitlistSlot, setDesiredWaitlistSlot] = useState(null)
   const [waitlistOffered, setWaitlistOffered] = useState(false)
   const [waitlistStatus, setWaitlistStatus] = useState(null)
+  const [standbyStage, setStandbyStage] = useState(null)
+  const [standbyDate, setStandbyDate] = useState(null)
+  const [standbySlots, setStandbySlots] = useState([])
 
   const days = useMemo(() => nextDays(7), [])
 
@@ -88,6 +100,22 @@ export default function BookingModal({ isOpen, onClose, initialServiceId, initia
       cancelled = true
     }
   }, [date, barberId])
+
+  useEffect(() => {
+    if (!standbyDate) return
+    let cancelled = false
+    const barberName = staffData.find((b) => b.id === barberId)?.name
+    fetchBusySlots(standbyDate, barberName)
+      .then((slots) => {
+        if (!cancelled) setStandbySlots(slots)
+      })
+      .catch(() => {
+        if (!cancelled) setStandbySlots([])
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [standbyDate, barberId])
   const nameId = useId()
   const phoneId = useId()
   const dialogRef = useRef(null)
@@ -109,6 +137,9 @@ export default function BookingModal({ isOpen, onClose, initialServiceId, initia
     setDesiredWaitlistSlot(null)
     setWaitlistOffered(false)
     setWaitlistStatus(null)
+    setStandbyStage(null)
+    setStandbyDate(null)
+    setStandbySlots([])
     setStep(initialServiceId && initialBarberId ? 2 : initialServiceId ? 1 : 0)
 
     dialogRef.current?.focus()
@@ -203,10 +234,14 @@ export default function BookingModal({ isOpen, onClose, initialServiceId, initia
     setDesiredWaitlistSlot(null)
     setWaitlistOffered(false)
     setWaitlistStatus(null)
+    setStandbyStage(null)
+    setStandbyDate(null)
+    setStandbySlots([])
   }
 
-  async function joinWaitlist() {
-    if (!desiredWaitlistSlot) return
+  async function joinWaitlist(slotDate, slotTime) {
+    setDesiredWaitlistSlot({ date: slotDate, time: slotTime })
+    setStandbyStage(null)
     setWaitlistStatus('joining')
     if (SIMULATION_MODE) {
       await new Promise((resolve) => setTimeout(resolve, SIMULATION_DELAY_MS))
@@ -227,8 +262,8 @@ export default function BookingModal({ isOpen, onClose, initialServiceId, initia
           client_slug: slug,
           service: service?.title,
           staff_member: barber?.name,
-          date: desiredWaitlistSlot.date,
-          time: desiredWaitlistSlot.time,
+          date: slotDate,
+          time: slotTime,
           name: name.trim(),
           phone: phone.trim(),
         }),
@@ -249,9 +284,23 @@ export default function BookingModal({ isOpen, onClose, initialServiceId, initia
     }
   }
 
-  function declineWaitlist() {
+  function offerStandby() {
+    setStandbyStage('date')
+  }
+
+  function declineStandby() {
+    setStandbyStage(null)
     setWaitlistOffered(true)
-    setWaitlistStatus(null)
+  }
+
+  function pickStandbyDate(dateKey) {
+    setStandbyDate(dateKey)
+    setStandbySlots([])
+    setStandbyStage('time')
+  }
+
+  function backToStandbyDate() {
+    setStandbyStage('date')
   }
 
   return (
@@ -322,8 +371,15 @@ export default function BookingModal({ isOpen, onClose, initialServiceId, initia
               desiredWaitlistSlot={desiredWaitlistSlot}
               waitlistOffered={waitlistOffered}
               waitlistStatus={waitlistStatus}
+              onOfferStandby={offerStandby}
+              onDeclineStandby={declineStandby}
+              standbyStage={standbyStage}
+              standbyDate={standbyDate}
+              standbySlots={standbySlots}
+              days={days}
+              onPickStandbyDate={pickStandbyDate}
+              onBackToStandbyDate={backToStandbyDate}
               onJoinWaitlist={joinWaitlist}
-              onDeclineWaitlist={declineWaitlist}
             />
           ) : (
             <>
@@ -390,7 +446,6 @@ export default function BookingModal({ isOpen, onClose, initialServiceId, initia
                         onClick={() => {
                           setDate(d.key)
                           setTime(null)
-                          setDesiredWaitlistSlot(null)
                         }}
                         className={`flex shrink-0 flex-col items-center gap-1 border bg-white px-3.5 py-2.5 transition-colors ${
                           date === d.key ? 'border-primary bg-ink' : 'border-ink/10 hover:border-primary/50'
@@ -406,26 +461,20 @@ export default function BookingModal({ isOpen, onClose, initialServiceId, initia
                   <div role="radiogroup" aria-label={booking.timeStepLabel} className="mt-5 grid grid-cols-4 gap-2">
                     {TIME_SLOTS.map((t) => {
                       const isBooked = bookedSlots.includes(t)
-                      const isDesired = isBooked && desiredWaitlistSlot?.date === date && desiredWaitlistSlot?.time === t
                       return (
                         <button
                           key={t}
                           type="button"
                           role="radio"
-                          aria-checked={isBooked ? isDesired : time === t}
-                          disabled={!date}
+                          aria-checked={time === t}
+                          disabled={!date || isBooked}
                           onClick={() => {
-                            if (isBooked) {
-                              setDesiredWaitlistSlot((prev) => (prev?.date === date && prev?.time === t ? null : { date, time: t }))
-                            } else {
-                              setTime(t)
-                            }
+                            if (isBooked) return
+                            setTime(t)
                           }}
                           className={`relative border py-2 text-sm transition-colors disabled:cursor-not-allowed disabled:opacity-30 ${
                             isBooked
-                              ? isDesired
-                                ? 'border-primary bg-primary/10 text-ink font-semibold'
-                                : 'border-ink/5 bg-ink/5 text-muted hover:border-primary/40'
+                              ? 'border-ink/5 bg-ink/5 text-muted'
                               : time === t
                                 ? 'border-primary bg-primary text-white font-semibold'
                                 : 'border-ink/10 bg-white text-ink hover:border-primary/50'
@@ -433,7 +482,7 @@ export default function BookingModal({ isOpen, onClose, initialServiceId, initia
                         >
                           {isBooked ? (
                             <span className="flex flex-col items-center gap-0.5 leading-none">
-                              <span className={isDesired ? '' : 'line-through'}>{t}</span>
+                              <span className="line-through">{t}</span>
                               <span className="text-[10px] font-semibold">{booking.bookedLabel}</span>
                             </span>
                           ) : (
@@ -444,17 +493,6 @@ export default function BookingModal({ isOpen, onClose, initialServiceId, initia
                     })}
                   </div>
                   {!date && <p className="mt-3 text-xs text-muted">{booking.pickDateHint}</p>}
-                  {date && desiredWaitlistSlot && (
-                    <div className="mt-3 flex items-center justify-between gap-2 border border-primary/30 bg-primary/5 px-3 py-2 text-xs text-ink">
-                      <span>{fmt(booking.waitlist.chipLabel, { time: desiredWaitlistSlot.time })}</span>
-                      <button type="button" onClick={() => setDesiredWaitlistSlot(null)} className="font-semibold text-accent underline">
-                        {booking.waitlist.chipRemoveLabel}
-                      </button>
-                    </div>
-                  )}
-                  {date && !desiredWaitlistSlot && bookedSlots.length > 0 && (
-                    <p className="mt-3 text-xs text-muted">{booking.waitlist.takenHint}</p>
-                  )}
                 </div>
               )}
 
@@ -548,12 +586,20 @@ function ConfirmationView({
   desiredWaitlistSlot,
   waitlistOffered,
   waitlistStatus,
+  onOfferStandby,
+  onDeclineStandby,
+  standbyStage,
+  standbyDate,
+  standbySlots,
+  days,
+  onPickStandbyDate,
+  onBackToStandbyDate,
   onJoinWaitlist,
-  onDeclineWaitlist,
 }) {
   const wl = booking.waitlist
-  const showPrompt = Boolean(desiredWaitlistSlot) && !waitlistOffered
+  const showOffer = !waitlistOffered && !waitlistStatus && standbyStage === null
   const isJoining = waitlistStatus === 'joining'
+  const standbyDateInfo = days.find((d) => d.key === standbyDate)
   return (
     <div className="flex flex-col items-center py-4 text-center" role="status">
       <div className="flex h-16 w-16 items-center justify-center rounded-full border border-primary">
@@ -574,41 +620,99 @@ function ConfirmationView({
         <p className="mt-1 text-xs text-muted">{booking.confirmation.demoNote}</p>
       )}
 
-      {showPrompt && (
+      {showOffer && (
         <div className="mt-6 w-full border border-primary/30 bg-primary/5 p-4 text-right">
-          <p className="font-display text-base text-ink">{wl.promptTitle}</p>
-          <p className="mt-1 text-sm text-muted">{wl.promptQuestion}</p>
-          <p className="mt-2 text-xs text-ink/70">{fmt(wl.promptSummary, { service: service?.title, time: desiredWaitlistSlot.time })}</p>
+          <p className="text-sm text-ink">{wl.offerQuestion}</p>
           <div className="mt-4 flex gap-3">
             <button
               type="button"
-              onClick={onJoinWaitlist}
-              disabled={isJoining}
-              className="flex-1 bg-primary py-2.5 text-sm font-semibold text-white transition-transform hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
+              onClick={onOfferStandby}
+              className="flex-1 bg-primary py-2.5 text-sm font-semibold text-white transition-transform hover:-translate-y-0.5"
             >
-              {isJoining ? wl.joiningLabel : wl.yesLabel}
+              {wl.offerYesLabel}
             </button>
             <button
               type="button"
-              onClick={onDeclineWaitlist}
-              disabled={isJoining}
-              className="flex-1 border border-ink/15 py-2.5 text-sm text-ink/70 transition-colors hover:border-ink/30 disabled:cursor-not-allowed disabled:opacity-60"
+              onClick={onDeclineStandby}
+              className="flex-1 border border-ink/15 py-2.5 text-sm text-ink/70 transition-colors hover:border-ink/30"
             >
-              {wl.noLabel}
+              {wl.offerNoLabel}
             </button>
           </div>
         </div>
       )}
-      {waitlistStatus === 'joined' && (
+
+      {standbyStage === 'date' && (
         <div className="mt-6 w-full border border-primary/30 bg-primary/5 p-4 text-right">
-          <p className="font-display text-base text-ink">{wl.joinedTitle}</p>
-          <p className="mt-1 text-xs text-muted">{wl.joinedBody}</p>
+          <p className="text-sm text-ink">{wl.chooseDateTitle}</p>
+          <div role="radiogroup" aria-label={wl.chooseDateTitle} className="mt-3 flex gap-2 overflow-x-auto pb-1">
+            {days.map((d) => (
+              <button
+                key={d.key}
+                type="button"
+                role="radio"
+                aria-checked={standbyDate === d.key}
+                onClick={() => onPickStandbyDate(d.key)}
+                className="flex shrink-0 flex-col items-center gap-1 border border-primary/30 bg-white px-3.5 py-2.5 transition-colors hover:border-primary"
+              >
+                <span className="text-xs text-muted">{d.isToday ? booking.todayLabel : d.dayName}</span>
+                <span className="font-display text-lg text-ink">{d.dayNum}</span>
+                <span className="text-[10px] text-muted">{d.monthName}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {standbyStage === 'time' && (
+        <div className="mt-6 w-full border border-primary/30 bg-primary/5 p-4 text-right">
+          <p className="text-sm text-ink">
+            {fmt(wl.chooseTimeTitle, { day: standbyDateInfo?.dayName, date: standbyDateInfo?.dayNum, month: standbyDateInfo?.monthName })}
+          </p>
+          {standbySlots.length === 0 ? (
+            <p className="mt-2 text-xs text-muted">{wl.noBusySlots}</p>
+          ) : (
+            <div className="mt-3 grid grid-cols-4 gap-2">
+              {standbySlots.map((t) => (
+                <button
+                  key={t}
+                  type="button"
+                  disabled={isJoining}
+                  onClick={() => onJoinWaitlist(standbyDate, t)}
+                  className="border border-primary/40 bg-white py-2 text-sm text-ink transition-colors hover:border-primary disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  {t}
+                </button>
+              ))}
+            </div>
+          )}
+          <button type="button" onClick={onBackToStandbyDate} className="mt-3 text-xs text-muted underline">
+            {wl.changeDateLabel}
+          </button>
+        </div>
+      )}
+
+      {waitlistStatus === 'joining' && (
+        <div className="mt-6 w-full border-2 border-warn bg-[rgba(184,115,90,0.08)] p-4 text-right text-sm text-muted">
+          {wl.joiningLabel}
+        </div>
+      )}
+      {waitlistStatus === 'joined' && (
+        <div className="mt-6 flex w-full items-start gap-2.5 border-2 border-warn bg-[rgba(184,115,90,0.08)] p-4 text-right">
+          <ClockIcon />
+          <div>
+            <p className="font-display text-base text-warn">{wl.standbyTitle}</p>
+            <p className="mt-1 text-xs text-muted">{fmt(wl.standbyBody, { time: desiredWaitlistSlot?.time })}</p>
+          </div>
         </div>
       )}
       {waitlistStatus === 'demo' && (
-        <div className="mt-6 w-full border border-primary/30 bg-primary/5 p-4 text-right">
-          <p className="font-display text-base text-ink">{wl.joinedTitle}</p>
-          <p className="mt-1 text-xs text-muted">{wl.demoJoinedBody}</p>
+        <div className="mt-6 flex w-full items-start gap-2.5 border-2 border-warn bg-[rgba(184,115,90,0.08)] p-4 text-right">
+          <ClockIcon />
+          <div>
+            <p className="font-display text-base text-warn">{wl.standbyTitle}</p>
+            <p className="mt-1 text-xs text-muted">{wl.demoStandbyBody}</p>
+          </div>
         </div>
       )}
       {waitlistStatus === 'full' && (
