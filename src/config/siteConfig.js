@@ -424,6 +424,7 @@ export const siteConfig = {
       accent: '#2c5a50',
       muted: '#5a6862',
       mutedOnDark: '#8a958f',
+      warn: '#b8735a',
     },
     fonts: {
       display: "'Frank Ruhl Libre', serif",

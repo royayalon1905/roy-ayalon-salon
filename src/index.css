@@ -14,6 +14,7 @@
   --color-accent: #2c5a50;
   --color-muted: #5a6862;
   --color-muted-on-dark: #8a958f;
+  --color-warn: #b8735a;
 }
 
 @layer base {
