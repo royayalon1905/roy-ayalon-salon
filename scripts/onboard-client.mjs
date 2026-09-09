@@ -146,7 +146,6 @@ function checklist(c) {
     `[ ] מספר אנשי צוות (${c.staff.length}) ≤ מגבלת המסלול ${c.tier} (${STAFF_LIMIT[c.tier]})`,
     '[ ] שכפול: robocopy /XD node_modules .git dist .netlify → npm install → npm run build',
     '[ ] .env בשכפול: VITE_SUPABASE_URL/ANON_KEY + webhooks — ורק אחרי כיבוי SIMULATION_MODE ב-BookingModal.jsx ו-times.js',
-    '[ ] MT_CLIENT_ID ב-src/data/times.js = ה-id שחזר מה-INSERT (כרגע hardcoded לסטודיו עלה!)',
     '[ ] index.html: title, description, theme-color, canonical/og:url — ידני, לא מגיע מ-siteConfig',
     '[ ] block_slots_pin נמסר לבעל העסק בערוץ מאובטח; public/block-slot.html נבדק עם ה-PIN',
     '[ ] google_review_link אמיתי (לא PLACEHOLDER) — הבקשה האוטומטית לביקורת תשלח אותו',
