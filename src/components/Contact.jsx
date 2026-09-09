@@ -74,7 +74,7 @@ export default function Contact() {
                     setSent(false)
                     setValues({ name: '', contact: '', message: '' })
                   }}
-                  className="mt-6 text-sm font-semibold text-primary hover:underline"
+                  className="mt-6 inline-flex min-h-11 items-center text-sm font-semibold text-primary hover:underline"
                 >
                   {form.sendAnotherLabel}
                 </button>

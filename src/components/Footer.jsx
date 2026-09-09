@@ -22,8 +22,8 @@ export default function Footer() {
         <div className="flex flex-col items-center gap-3 text-xs text-surface-dim sm:flex-row">
           <p>© {new Date().getFullYear()} {businessInfo.shortName}. {footer.rightsNote}</p>
           <nav aria-label={footer.legalTitle} className="flex gap-4">
-            <a href={content.legal.accessibility.path} className="text-surface-dim hover:text-primary-on-dark">{footer.accessibilityLinkLabel}</a>
-            <a href={content.legal.privacy.path} className="text-surface-dim hover:text-primary-on-dark">{footer.privacyLinkLabel}</a>
+            <a href={content.legal.accessibility.path} className="inline-flex min-h-11 items-center text-surface-dim hover:text-primary-on-dark">{footer.accessibilityLinkLabel}</a>
+            <a href={content.legal.privacy.path} className="inline-flex min-h-11 items-center text-surface-dim hover:text-primary-on-dark">{footer.privacyLinkLabel}</a>
           </nav>
         </div>
       </div>

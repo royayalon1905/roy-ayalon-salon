@@ -15,7 +15,7 @@ export default function LegalPage({ page }) {
     <div className="min-h-dvh bg-surface font-body">
       <Navbar />
       <main id="main" className="mx-auto max-w-3xl px-6 py-32 md:px-10">
-        <a href="/" className="text-sm text-accent hover:underline">
+        <a href="/" className="inline-flex min-h-11 items-center text-sm text-accent hover:underline">
           ← {legal.backLabel}
         </a>
 
@@ -62,7 +62,7 @@ export default function LegalPage({ page }) {
               <div className="flex gap-2">
                 <dt className="font-semibold text-ink">{page.contact.phoneLabel}:</dt>
                 <dd>
-                  <a href={`tel:${businessInfo.phone}`} className="hover:text-accent">
+                  <a href={`tel:${businessInfo.phone}`} className="inline-flex min-h-11 items-center hover:text-accent">
                     {businessInfo.phone}
                   </a>
                 </dd>

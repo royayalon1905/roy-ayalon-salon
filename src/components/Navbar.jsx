@@ -19,7 +19,7 @@ export default function Navbar({ onBook }) {
         className="relative mx-auto flex max-w-7xl items-center justify-between py-4 pl-[max(1.5rem,env(safe-area-inset-left))] pr-[max(1.5rem,env(safe-area-inset-right))] md:pl-[max(2.5rem,env(safe-area-inset-left))] md:pr-[max(2.5rem,env(safe-area-inset-right))]"
         aria-label={nav.ariaLabel}
       >
-        <a href="#top" className="font-display text-xl tracking-wide text-ink md:text-2xl">
+        <a href="#top" className="inline-flex min-h-11 items-center font-display text-xl tracking-wide text-ink md:text-2xl">
           {businessInfo.shortName}
         </a>
 
@@ -46,7 +46,7 @@ export default function Navbar({ onBook }) {
 
         <button
           type="button"
-          className="flex flex-col gap-1.5 p-3 md:hidden"
+          className="flex min-h-11 min-w-11 flex-col items-center justify-center gap-1.5 p-3 md:hidden"
           aria-label={open ? nav.menuCloseLabel : nav.menuOpenLabel}
           aria-expanded={open}
           aria-controls="mobile-menu"
@@ -83,7 +83,7 @@ export default function Navbar({ onBook }) {
                 setOpen(false)
                 onBook?.()
               }}
-              className="mt-2 block w-full border border-ink px-5 py-2 text-center text-sm font-semibold text-ink"
+              className="mt-2 block min-h-11 w-full border border-ink px-5 py-2.5 text-center text-sm font-semibold text-ink"
             >
               {nav.bookCta}
             </button>

@@ -17,10 +17,10 @@ export default function Hero({ onBook }) {
             className="h-full w-full"
             style={{ background: 'linear-gradient(135deg, #9fc4b8 0%, #3e7c6f 55%, #1e2b26 100%)' }}
             role="img"
-            aria-label="תמונת פתיחה מהסטודיו"
+            aria-label={hero.imageAlt}
           />
           <span className="absolute bottom-4 right-4 bg-ink/80 px-3 py-1.5 text-xs font-semibold tracking-wide text-surface-dim">
-            פן ועיצוב
+            {hero.imageCaption}
           </span>
         </div>
 
@@ -45,7 +45,7 @@ export default function Hero({ onBook }) {
             >
               {hero.ctaBook}
             </button>
-            <a href="#services" className="text-sm font-semibold tracking-wide text-ink underline-offset-4 hover:underline">
+            <a href="#services" className="inline-flex min-h-11 items-center text-sm font-semibold tracking-wide text-ink underline-offset-4 hover:underline">
               {hero.ctaPrices} ←
             </a>
           </div>

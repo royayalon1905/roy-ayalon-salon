@@ -40,7 +40,7 @@ export default function Gallery() {
                     aria-label={g.before.alt}
                   />
                   <span className="absolute inset-x-0 top-0 bg-ink/70 py-1 text-center text-[10px] font-semibold tracking-[0.2em] text-surface-dim">
-                    לפני
+                    {galleryContent.beforeLabel}
                   </span>
                 </div>
                 <div className="relative aspect-[3/4]">
@@ -51,7 +51,7 @@ export default function Gallery() {
                     aria-label={g.after.alt}
                   />
                   <span className="absolute inset-x-0 top-0 bg-primary/90 py-1 text-center text-[10px] font-semibold tracking-[0.2em] text-white">
-                    אחרי
+                    {galleryContent.afterLabel}
                   </span>
                 </div>
               </div>

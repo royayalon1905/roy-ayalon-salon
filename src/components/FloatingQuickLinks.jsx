@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { siteConfig } from '../config/siteConfig'
 import { useAccessibilityPrefs } from '../hooks/useAccessibilityPrefs'
 import { useEscapeKey } from '../hooks/useEscapeKey'
@@ -55,6 +55,12 @@ export default function FloatingQuickLinks() {
   useEscapeKey(open, () => setOpen(false))
   useFocusTrap(open, panelRef)
 
+  // מיקוד נכנס לפאנל בפתיחה — בלי זה משתמש/ת מקלדת/קורא-מסך נשאר/ת על הכפתור הצף
+  // בזמן שה-dialog כבר פתוח (נמצא ב-QA 9.9.2026).
+  useEffect(() => {
+    if (open) panelRef.current?.focus()
+  }, [open])
+
   return (
     <div
       className="fixed bottom-[max(1.25rem,env(safe-area-inset-bottom))] left-[max(1.25rem,env(safe-area-inset-left))] z-40 flex flex-col items-start gap-2 sm:bottom-[calc(6rem+env(safe-area-inset-bottom))] sm:left-[max(1.5rem,env(safe-area-inset-left))] sm:gap-3"
@@ -67,7 +73,8 @@ export default function FloatingQuickLinks() {
           role="dialog"
           aria-modal="true"
           aria-label={w.title}
-          className="order-first w-[min(18rem,calc(100vw-2.5rem))] border border-ink/10 bg-white p-5 shadow-2xl"
+          tabIndex={-1}
+          className="order-first w-[min(18rem,calc(100vw-2.5rem))] border border-ink/10 bg-white p-5 shadow-2xl outline-none"
         >
           <div className="flex items-center justify-between border-b border-ink/10 pb-3">
             <h2 className="font-display text-lg text-ink">{w.title}</h2>
@@ -87,7 +94,7 @@ export default function FloatingQuickLinks() {
               <button
                 type="button"
                 onClick={cycleFontScale}
-                className="border border-ink/20 px-3 py-1 text-xs font-semibold text-ink hover:border-primary"
+                className="inline-flex min-h-11 items-center border border-ink/20 px-3 py-1 text-xs font-semibold text-ink hover:border-primary"
               >
                 {w.fontSizeButton} {prefs.fontScale > 0 ? `(${prefs.fontScale === 1 ? '1' : '2'})` : ''}
               </button>
@@ -109,10 +116,10 @@ export default function FloatingQuickLinks() {
           </div>
 
           <div className="mt-3 flex items-center justify-between border-t border-ink/10 pt-3">
-            <button type="button" onClick={reset} className="text-xs font-semibold text-muted hover:text-accent">
+            <button type="button" onClick={reset} className="inline-flex min-h-11 items-center text-xs font-semibold text-muted hover:text-accent">
               {w.resetLabel}
             </button>
-            <a href={legal.accessibility.path} className="text-xs font-semibold text-primary hover:underline">
+            <a href={legal.accessibility.path} className="inline-flex min-h-11 items-center text-xs font-semibold text-primary hover:underline">
               {w.statementLinkLabel}
             </a>
           </div>

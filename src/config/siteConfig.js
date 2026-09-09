@@ -3,6 +3,8 @@ export const siteConfig = {
   slug: 'salon-demo',
 
   businessInfo: {
+    // כתובת האתר החי — משמש ל-JSON-LD (@id/url). להחליף בדומיין של הלקוח בכל שכפול.
+    siteUrl: 'https://roy-ayalon-salon.netlify.app',
     shortName: 'סטודיו עלה',
     category: 'עיצוב שיער',
     city: 'חולון',
@@ -80,6 +82,9 @@ export const siteConfig = {
       ariaLabel: 'כותרת ראשית',
       ctaBook: 'קביעת תור',
       ctaPrices: 'מחירון שירותים',
+      // הועבר מ-Hero.jsx 9.9.2026 (היה hardcoded)
+      imageAlt: 'תמונת פתיחה מהסטודיו',
+      imageCaption: 'פן ועיצוב',
     },
     services: {
       eyebrow: 'מה אנחנו מציעים',
@@ -117,6 +122,9 @@ export const siteConfig = {
     gallery: {
       eyebrow: 'תיק עבודות',
       title: 'כל תמונה מדברת בעד עצמה',
+      // הועבר מ-Gallery.jsx 9.9.2026 (היה hardcoded)
+      beforeLabel: 'לפני',
+      afterLabel: 'אחרי',
     },
     team: {
       eyebrow: 'הצוות שלנו',

@@ -325,11 +325,11 @@ export default function BookingModal({ isOpen, onClose, initialServiceId, initia
       >
         <div className="flex items-center justify-between border-b border-ink/10 px-5 py-4">
           {!done && step > 0 ? (
-            <button type="button" onClick={goBack} aria-label={booking.backLabel} className="text-ink/70 transition-colors hover:text-accent">
+            <button type="button" onClick={goBack} aria-label={booking.backLabel} className="flex h-11 w-11 items-center justify-center text-ink/70 transition-colors hover:text-accent">
               <ChevronIcon className="h-5 w-5" />
             </button>
           ) : (
-            <span className="w-5" />
+            <span className="w-11" />
           )}
 
           <div className="text-center">
@@ -339,7 +339,7 @@ export default function BookingModal({ isOpen, onClose, initialServiceId, initia
             {service && !done && <p className="text-xs text-primary">{service.title}</p>}
           </div>
 
-          <button type="button" onClick={onClose} aria-label={booking.closeLabel} className="text-ink/70 transition-colors hover:text-accent">
+          <button type="button" onClick={onClose} aria-label={booking.closeLabel} className="flex h-11 w-11 items-center justify-center text-ink/70 transition-colors hover:text-accent">
             <CloseIcon />
           </button>
         </div>
@@ -686,7 +686,7 @@ function ConfirmationView({
               ))}
             </div>
           )}
-          <button type="button" onClick={onBackToStandbyDate} className="mt-3 text-xs text-muted underline">
+          <button type="button" onClick={onBackToStandbyDate} className="mt-3 inline-flex min-h-11 items-center text-xs text-muted underline">
             {wl.changeDateLabel}
           </button>
         </div>
