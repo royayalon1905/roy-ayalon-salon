@@ -1,5 +1,2 @@
 User-agent: *
-Allow: /
-Disallow: /block-slot.html
-
-Sitemap: https://roy-ayalon-salon.netlify.app/sitemap.xml
+Disallow: /
