@@ -3,9 +3,17 @@ import RazorReveal from './RazorReveal'
 import { siteConfig } from '../config/siteConfig'
 import { isValidEmail, isValidIsraeliPhone } from '../utils/validation'
 
-const { businessInfo, content } = siteConfig
+const { businessInfo, content, slug } = siteConfig
 const { contact } = content
 const { form, info } = contact
+
+const CONTACT_WEBHOOK_URL = import.meta.env.VITE_CONTACT_WEBHOOK_URL
+
+// TODO(סימולציית-מכירות): כל עוד true, שום קריאת רשת אמיתית לא יוצאת מטופס
+// יצירת הקשר — לא ל-webhook, גם אם VITE_CONTACT_WEBHOOK_URL מוגדר ב-.env.
+// כדי להחזיר חיווט אמיתי: להפוך ל-false. אותו דפוס בדיוק כמו BookingModal.jsx.
+const SIMULATION_MODE = true
+const SIMULATION_DELAY_MS = 900
 
 function AccessibilityIcon() {
   return (
@@ -25,6 +33,8 @@ export default function Contact() {
   const [values, setValues] = useState({ name: '', contact: '', message: '' })
   const [errors, setErrors] = useState({})
   const [sent, setSent] = useState(false)
+  const [sending, setSending] = useState(false)
+  const [sendError, setSendError] = useState('')
 
   const { accessibility } = businessInfo
   const accessibilitySegments = [accessibility.wheelchairAccess ? info.accessibilityWheelchairYes : info.accessibilityWheelchairNo]
@@ -40,7 +50,7 @@ export default function Contact() {
     setErrors((e) => ({ ...e, [field]: '' }))
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault()
     const nextErrors = {}
     if (!values.name.trim()) nextErrors.name = form.nameError
@@ -51,7 +61,40 @@ export default function Contact() {
       setErrors(nextErrors)
       return
     }
-    setSent(true)
+
+    if (!CONTACT_WEBHOOK_URL) {
+      setSent(true)
+      return
+    }
+
+    setSending(true)
+    setSendError('')
+
+    if (SIMULATION_MODE) {
+      await new Promise((resolve) => setTimeout(resolve, SIMULATION_DELAY_MS))
+      setSending(false)
+      setSent(true)
+      return
+    }
+
+    try {
+      const res = await fetch(CONTACT_WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          client_slug: slug,
+          name: values.name.trim(),
+          contact: values.contact.trim(),
+          message: values.message.trim(),
+        }),
+      })
+      if (!res.ok) throw new Error(`contact webhook failed: ${res.status}`)
+      setSent(true)
+    } catch {
+      setSendError(form.submitError)
+    } finally {
+      setSending(false)
+    }
   }
 
   return (
@@ -72,6 +115,7 @@ export default function Contact() {
                   type="button"
                   onClick={() => {
                     setSent(false)
+                    setSendError('')
                     setValues({ name: '', contact: '', message: '' })
                   }}
                   className="mt-6 inline-flex min-h-11 items-center text-sm font-semibold text-primary hover:underline"
@@ -128,10 +172,12 @@ export default function Contact() {
 
                 <button
                   type="submit"
-                  className="bg-ink px-7 py-3.5 text-sm font-bold text-surface transition-transform hover:-translate-y-0.5"
+                  disabled={sending}
+                  className="bg-ink px-7 py-3.5 text-sm font-bold text-surface transition-transform hover:-translate-y-0.5 disabled:opacity-60"
                 >
-                  {form.submitLabel}
+                  {sending ? form.submittingLabel : form.submitLabel}
                 </button>
+                {sendError && <p role="alert" className="text-sm text-accent">{sendError}</p>}
               </form>
             )}
           </div>

@@ -9,23 +9,18 @@ import { useReveal } from '../hooks/useReveal'
  * reports zero intersection for an element that's already clipped to zero
  * area by its own inline clip-path, which would permanently deadlock the
  * reveal (never intersecting -> never revealed -> never intersecting).
+ *
+ * CSP 9.9.2026: style-src בלי 'unsafe-inline' — הועבר מ-style={{}} דינמי
+ * ל-classes קבועים (.razor-reveal / .razor-reveal--visible ב-index.css).
+ * `delay` לא נעשה בו שימוש באף קריאה בקוד הקיים (תמיד 0) — ה-CSS קובע
+ * 0ms קבוע. אם ירצו delay משתנה בעתיד, זה ידרוש פתרון אחר (לא inline style).
  */
-export default function RazorReveal({ children, as: Tag = 'div', delay = 0, className = '' }) {
+export default function RazorReveal({ children, as: Tag = 'div', className = '' }) {
   const [ref, visible] = useReveal()
 
   return (
     <Tag ref={ref} className={className}>
-      <span
-        style={{
-          display: 'block',
-          clipPath: visible ? 'polygon(0 0, 100% 0, 100% 100%, 0 100%)' : 'polygon(0 0, 0 0, 0 100%, 0 100%)',
-          opacity: visible ? 1 : 0,
-          transform: visible ? 'translateX(0)' : 'translateX(-14px)',
-          transition: `clip-path 750ms cubic-bezier(.65,0,.35,1) ${delay}ms, opacity 600ms ease ${delay}ms, transform 750ms cubic-bezier(.65,0,.35,1) ${delay}ms`,
-        }}
-      >
-        {children}
-      </span>
+      <span className={`razor-reveal${visible ? ' razor-reveal--visible' : ''}`}>{children}</span>
     </Tag>
   )
 }

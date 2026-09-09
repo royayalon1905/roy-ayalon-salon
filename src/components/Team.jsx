@@ -8,12 +8,9 @@ const { team } = content
 // שהצוות היה חלק מסקשן "הסיפור שלנו"). עדיין 4 אנשי צוות (לא 3 כמו ברפרנס —
 // רועי אישר שהמספר האמיתי בעסק הוא 4). אווטארים עדיין גרדיאנט placeholder עם
 // האות הראשונה — לא תמונות אמיתיות. TODO: להחליף בתמונות אמיתיות של הצוות.
-const AVATAR_GRADIENTS = [
-  'linear-gradient(135deg, #3e7c6f, #1e2b26)',
-  'linear-gradient(135deg, #9fc4b8, #2c5a50)',
-  'linear-gradient(135deg, #2c5a50, #22302b)',
-  'linear-gradient(135deg, #5a6862, #1e2b26)',
-]
+// CSP: style-src בלי 'unsafe-inline' — גרדיאנטים כ-classes קבועים ב-index.css
+// (במקום style={{background: ...}} דינמי) במקום מחרוזות CSS גולמיות.
+const AVATAR_GRADIENT_CLASSES = ['avatar-gradient-0', 'avatar-gradient-1', 'avatar-gradient-2', 'avatar-gradient-3']
 
 export default function Team() {
   return (
@@ -28,8 +25,7 @@ export default function Team() {
           {staffData.map((member, i) => (
             <div key={member.id} className="flex flex-col items-center text-center">
               <div
-                className="flex h-24 w-24 items-center justify-center rounded-full text-2xl font-display text-surface-dim"
-                style={{ background: AVATAR_GRADIENTS[i % AVATAR_GRADIENTS.length] }}
+                className={`flex h-24 w-24 items-center justify-center rounded-full text-2xl font-display text-surface-dim ${AVATAR_GRADIENT_CLASSES[i % AVATAR_GRADIENT_CLASSES.length]}`}
                 aria-hidden="true"
               >
                 {member.name.trim()[0]}

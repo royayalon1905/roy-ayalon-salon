@@ -34,8 +34,7 @@ export default function Gallery() {
               <div className="grid grid-cols-2">
                 <div className="relative aspect-[3/4]">
                   <div
-                    className="h-full w-full grayscale-[10%]"
-                    style={{ background: g.before.gradient }}
+                    className={`h-full w-full grayscale-[10%] ${g.before.class}`}
                     role="img"
                     aria-label={g.before.alt}
                   />
@@ -45,8 +44,7 @@ export default function Gallery() {
                 </div>
                 <div className="relative aspect-[3/4]">
                   <div
-                    className="h-full w-full"
-                    style={{ background: g.after.gradient }}
+                    className={`h-full w-full ${g.after.class}`}
                     role="img"
                     aria-label={g.after.alt}
                   />

@@ -104,3 +104,49 @@ html.a11y-highlight-links a {
     animation: hero-kenburns 6s ease-out forwards;
   }
 }
+
+/* CSP הידוקה 9.9.2026 — style-src בלי 'unsafe-inline': כל מה שהיה style={{}}
+   דינמי (ערכים קבועים/data-driven, לא תלויי משתמש) הועבר ל-classes כאן. */
+.hero-image-bg {
+  background: linear-gradient(135deg, #9fc4b8 0%, #3e7c6f 55%, #1e2b26 100%);
+}
+
+.avatar-gradient-0 { background: linear-gradient(135deg, #3e7c6f, #1e2b26); }
+.avatar-gradient-1 { background: linear-gradient(135deg, #9fc4b8, #2c5a50); }
+.avatar-gradient-2 { background: linear-gradient(135deg, #2c5a50, #22302b); }
+.avatar-gradient-3 { background: linear-gradient(135deg, #5a6862, #1e2b26); }
+
+.gallery-1-before { background: linear-gradient(135deg, #5a6862, #22302b); }
+.gallery-1-after  { background: linear-gradient(135deg, #9fc4b8, #3e7c6f); }
+.gallery-2-before { background: linear-gradient(135deg, #8a958f, #5a6862); }
+.gallery-2-after  { background: linear-gradient(135deg, #3e7c6f, #1e2b26); }
+.gallery-3-before { background: linear-gradient(135deg, #22302b, #5a6862); }
+.gallery-3-after  { background: linear-gradient(135deg, #eef5f2, #9fc4b8); }
+.gallery-4-before { background: linear-gradient(135deg, #5a6862, #2c5a50); }
+.gallery-4-after  { background: linear-gradient(135deg, #2c5a50, #9fc4b8); }
+.gallery-5-before { background: linear-gradient(135deg, #1e2b26, #8a958f); }
+.gallery-5-after  { background: linear-gradient(135deg, #22302b, #3e7c6f); }
+.gallery-6-before { background: linear-gradient(135deg, #8a958f, #22302b); }
+.gallery-6-after  { background: linear-gradient(135deg, #1e2b26, #3e7c6f); }
+
+.modal-safe-area-padding {
+  padding-top: max(1rem, env(safe-area-inset-top));
+  padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  padding-left: max(1rem, env(safe-area-inset-left));
+  padding-right: max(1rem, env(safe-area-inset-right));
+}
+
+/* RazorReveal: היה style={{}} דינמי לפי visible (0/1), ה-delay נשאר תמיד 0
+   בפועל בכל הקריאות באתר (אף אחת לא מעבירה delay) — קובע 0ms ב-transition. */
+.razor-reveal {
+  display: block;
+  clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+  opacity: 0;
+  transform: translateX(-14px);
+  transition: clip-path 750ms cubic-bezier(.65, 0, .35, 1), opacity 600ms ease, transform 750ms cubic-bezier(.65, 0, .35, 1);
+}
+.razor-reveal--visible {
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  opacity: 1;
+  transform: translateX(0);
+}

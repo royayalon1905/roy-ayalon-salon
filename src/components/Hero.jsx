@@ -14,8 +14,7 @@ export default function Hero({ onBook }) {
       <div className="mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-2 lg:gap-16">
         <div className="relative order-1 aspect-[4/3] overflow-hidden lg:order-none">
           <div
-            className="h-full w-full"
-            style={{ background: 'linear-gradient(135deg, #9fc4b8 0%, #3e7c6f 55%, #1e2b26 100%)' }}
+            className="h-full w-full hero-image-bg"
             role="img"
             aria-label={hero.imageAlt}
           />

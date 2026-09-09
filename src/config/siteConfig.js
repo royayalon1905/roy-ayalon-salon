@@ -23,11 +23,6 @@ export const siteConfig = {
       { day: 'שישי', time: '08:30 – 14:00' },
       { day: 'שבת', time: 'סגור' },
     ],
-    stats: [
-      { num: '15+', label: 'שנות ניסיון' },
-      { num: '500+', label: 'לקוחות מרוצים' },
-      { num: '4.9★', label: 'דירוג גוגל' },
-    ],
     socials: [
       { label: 'אינסטגרם', href: '#' },
       { label: 'פייסבוק', href: '#' },
@@ -89,7 +84,6 @@ export const siteConfig = {
     services: {
       eyebrow: 'מה אנחנו מציעים',
       title: 'מחירון שירותים',
-      staffTabsLabel: 'בחירת מעצב/ת',
     },
     bookingIntro: {
       eyebrow: 'בואו נקבע',
@@ -130,23 +124,9 @@ export const siteConfig = {
       eyebrow: 'הצוות שלנו',
       title: 'האנשים מאחורי כל תספורת',
     },
-    about: {
-      eyebrow: 'הסיפור שלנו',
-      title: 'כל שיער מספר סיפור אחר',
-      paragraphs: [
-        'מה שהתחיל ב־{year} כחדר קטן בשינקין, הפך לכתובת שאליה מגיעים כשרוצים שינוי אמיתי - גוון חדש, אורך אחר, או פשוט מישהי שבאמת מקשיבה לפני שהיא נוגעת בשיער שלך. בלי פשרות על התוצאה, בלי חיפזון בדרך אליה.',
-        'הצוות שלנו מתמחה בצבע ובליאז׳, החלקות, ותספורות שנבנות לפי מבנה הפנים והאישיות שלך - לא לפי תמונה שהבאת מאינסטגרם.',
-      ],
-      foundedNote: 'השנה בה הכל התחיל',
-    },
     testimonials: {
       eyebrow: 'לקוחות ממליצות',
       title: 'מה שאומרים עלינו',
-      prevLabel: 'ביקורת קודמת',
-      nextLabel: 'ביקורת הבאה',
-      carouselLabel: 'קרוסלת המלצות לקוחות',
-      slideLabel: 'המלצה {current} מתוך {total}',
-      positionLabel: 'מוצגת המלצה {current} מתוך {total}',
     },
     faq: {
       eyebrow: 'לקוחות שואלים',
@@ -188,8 +168,10 @@ export const siteConfig = {
         messagePlaceholder: 'איך נוכל לעזור?',
         messageError: 'נא לכתוב הודעה קצרה',
         submitLabel: 'שליחת הודעה',
-        sentTitle: 'ההודעה נשלחה',
-        sentBody: 'נחזור אליכם בהקדם. תודה שפניתם אלינו.',
+        submittingLabel: 'שולח...',
+        submitError: 'השליחה נכשלה. נסו שוב, או התקשרו/י אלינו ישירות.',
+        sentTitle: 'תודה על הפנייה',
+        sentBody: 'זהו אתר הדגמה — ההודעה לא נשלחה בפועל. באתר אמיתי היא הייתה מגיעה אלינו ואנחנו חוזרים בהקדם.',
         sendAnotherLabel: 'שליחת הודעה נוספת',
       },
       info: {
@@ -258,11 +240,7 @@ export const siteConfig = {
       },
     },
     footer: {
-      quickNavTitle: 'ניווט מהיר',
-      bookingLinkLabel: 'הזמנת תור',
-      socialTitle: 'עקבו אחרינו',
       rightsNote: 'כל הזכויות שמורות.',
-      demoNote: 'אתר דמו לצורכי הדגמה בלבד',
       legalTitle: 'מידע משפטי',
       accessibilityLinkLabel: 'הצהרת נגישות',
       privacyLinkLabel: 'מדיניות פרטיות',
@@ -442,15 +420,6 @@ export const siteConfig = {
     // הנפשת Hero — 4 סצנות מתחלפות (במקום תמונה סטטית אחת).
     // heroImage/heroImageAlt נשארים כ-fallback סטטי (למשל og:image), לא בשימוש ב-Hero עצמו יותר.
     heroImage: 'https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=1920&h=1280&fit=crop&auto=format&q=80',
-    heroImageAlt: 'פנים הסטודיו - כיסאות עיצוב שיער וסביבת עבודה',
-    // TODO placeholder: כל scene הוא "משבצת" גרדיאנט זמנית עד שיוחלף בתמונת סטודיו אמיתית.
-    heroAnimationMs: 5000, // קצב החלפה, 2000-8000 לפי המפרט
-    heroScenes: [
-      { id: 'cut', label: 'גזירה', from: '#1e2b26', to: '#3e7c6f' },
-      { id: 'blowdry', label: 'פן', from: '#2c5a50', to: '#5a6862' },
-      { id: 'color', label: 'צבע', from: '#22302b', to: '#2c5a50' },
-      { id: 'wash', label: 'חפיפה', from: '#3e7c6f', to: '#1e2b26' },
-    ],
   },
 }
 
