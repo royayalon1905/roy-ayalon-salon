@@ -1,0 +1,252 @@
+{
+  "passed": 49,
+  "failed": 0,
+  "results": [
+    {
+      "check": "desktop: אין גלילה אופקית (היום)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "check": "desktop: אישור מהמסך מציג הודעה",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "check": "desktop: מונה ממתינים ירד",
+      "ok": true,
+      "detail": "1→0"
+    },
+    {
+      "check": "desktop: לחיצה על מונה מסננת",
+      "ok": true,
+      "detail": "8 כרטיסים / 8 במונה"
+    },
+    {
+      "check": "desktop: outbox מכיל אישור תור + תזכורת",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "check": "desktop: אין גלילה אופקית (יומן)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "check": "desktop: סינון יומן לפי איש צוות",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "check": "desktop: הצעה ידנית לרשימת המתנה",
+      "ok": true,
+      "detail": "ההצעה נשלחה ל-1 ממתינים. מי שעונה ראשון מקבל."
+    },
+    {
+      "check": "desktop: חיפוש לפי שם",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "check": "desktop: חיפוש לפי טלפון",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "check": "desktop: תגית \"לא חזר מזמן\" בכרטיס",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "check": "desktop: \"הזמן חזרה\" מהכרטיס",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "check": "desktop: הכנסות לפי שירות ולפי עובד = סה\"כ",
+      "ok": true,
+      "detail": "[4010, 4010] vs 4010"
+    },
+    {
+      "check": "desktop: שלח דוח לוואטסאפ",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "check": "desktop: מתג מוצג/מוסתר",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "check": "desktop: עריכת מחיר",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "check": "desktop: הוספת שירות",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "check": "desktop: פירוט \"היום\" לאיש צוות",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "check": "desktop: שינוי הרשאה",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "check": "desktop: כפתור הזמנה בקישור WhatsApp קיים",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "check": "desktop: N-2 חסימה מעבר למכסה",
+      "ok": true,
+      "detail": "במסלול VIP אפשר עד 5 אנשי צוות. לשדרוג, כותבים לרועי."
+    },
+    {
+      "check": "desktop: N-2 נוספו בדיוק עד המכסה (VIP: 2 קיימים + 3)",
+      "ok": true,
+      "detail": "added=3"
+    },
+    {
+      "check": "desktop: אין גלילה אופקית (הגדרות)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "check": "desktop: איש צוות רואה רק את התורים שלו",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "check": "mobile: אין גלילה אופקית (היום)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "check": "mobile: אישור מהמסך מציג הודעה",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "check": "mobile: מונה ממתינים ירד",
+      "ok": true,
+      "detail": "1→0"
+    },
+    {
+      "check": "mobile: לחיצה על מונה מסננת",
+      "ok": true,
+      "detail": "8 כרטיסים / 8 במונה"
+    },
+    {
+      "check": "mobile: outbox מכיל אישור תור + תזכורת",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "check": "mobile: אין גלילה אופקית (יומן)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "check": "mobile: סינון יומן לפי איש צוות",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "check": "mobile: הצעה ידנית לרשימת המתנה",
+      "ok": true,
+      "detail": "ההצעה נשלחה ל-1 ממתינים. מי שעונה ראשון מקבל."
+    },
+    {
+      "check": "mobile: חיפוש לפי שם",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "check": "mobile: חיפוש לפי טלפון",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "check": "mobile: תגית \"לא חזר מזמן\" בכרטיס",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "check": "mobile: \"הזמן חזרה\" מהכרטיס",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "check": "mobile: הכנסות לפי שירות ולפי עובד = סה\"כ",
+      "ok": true,
+      "detail": "[4010, 4010] vs 4010"
+    },
+    {
+      "check": "mobile: שלח דוח לוואטסאפ",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "check": "mobile: מתג מוצג/מוסתר",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "check": "mobile: עריכת מחיר",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "check": "mobile: הוספת שירות",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "check": "mobile: פירוט \"היום\" לאיש צוות",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "check": "mobile: שינוי הרשאה",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "check": "mobile: כפתור הזמנה בקישור WhatsApp קיים",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "check": "mobile: N-2 חסימה מעבר למכסה",
+      "ok": true,
+      "detail": "במסלול VIP אפשר עד 5 אנשי צוות. לשדרוג, כותבים לרועי."
+    },
+    {
+      "check": "mobile: N-2 נוספו בדיוק עד המכסה (VIP: 2 קיימים + 3)",
+      "ok": true,
+      "detail": "added=3"
+    },
+    {
+      "check": "mobile: אין גלילה אופקית (הגדרות)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "check": "mobile: איש צוות רואה רק את התורים שלו",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "check": "קונסול נקי (שני הגדלים)",
+      "ok": true,
+      "detail": ""
+    }
+  ],
+  "console_errors": []
+}
