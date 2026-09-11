@@ -1,7 +1,10 @@
 -- ============================================================================
 -- ROYA 2.0 — migration 001: אפליקציית הבעלים (roya-owner-app)
--- סטטוס: ממתין להחלה. לא הוחל על prod ולא על branch (D3: branch עולה כסף, אסור לאשר).
--- להחלה: apply_migration(name='roya2_owner_app_schema') על branch, ואחרי בדיקה על prod.
+-- סטטוס: הוחל בפרודקשן ב-11.9.2026 (project facehdfqvppxnmdtpzuo, version 20260911051242).
+-- קובץ זה סונכרן ב-11.9.2026 (משימת "סנכרון SQL") לשקף בדיוק את מה שרץ בפועל — ראו הערה הבאה.
+-- תוקן (11.9.2026, Cowork): הוזז בלוק 3 (הרחבת טבלאות קיימות) לפני בלוק 2 (פונקציות הקשר),
+-- כי mt_sees_all() בסעיף 2 המקורי תלוי בעמודה mt_staff.sees_all שנוצרת בסעיף 3 — ניסיון-הרצה
+-- ראשון (11.9.2026) נכשל בדיוק על זה ובוטל אוטומטית ע"י Postgres (transaction rollback), בלי נזק.
 -- כללי הפרויקט: mt_ לכל טבלה, RLS דלוק, policy↔GRANT באותה פעימה, RPC עם search_path, REVOKE FROM PUBLIC.
 -- ============================================================================
 
@@ -31,6 +34,55 @@ create table if not exists public.mt_staff_invites (
   created_at timestamptz not null default now()
 );
 alter table public.mt_staff_invites enable row level security;
+
+-- ---------- 3. הרחבת טבלאות קיימות (הוזז לפני 2, ראו הערה למעלה) ----------
+alter table public.mt_clients add column if not exists custom_domain text;
+comment on column public.mt_clients.custom_domain is 'N-4: דומיין מותאם של העסק (host בלבד). ה-build של האתר קורא אותו ל-canonical/OG.';
+
+alter table public.mt_staff
+  add column if not exists phone text,
+  add column if not exists role text not null default 'staff' check (role in ('owner','manager','staff')),
+  add column if not exists sees_all boolean not null default false,
+  add column if not exists hours_override jsonb;
+
+alter table public.mt_services add column if not exists visible_on_site boolean not null default true;
+comment on column public.mt_services.visible_on_site is 'מתג מוצג/מוסתר באתר (מסך המחירון). האתר מסנן לפי זה.';
+
+alter table public.mt_end_customers
+  add column if not exists notes text,
+  add column if not exists birthdate date,
+  add column if not exists blocked boolean,
+  add column if not exists block_override boolean not null default false,
+  add column if not exists custom_fields jsonb not null default '{}'::jsonb,
+  add column if not exists referred_by uuid references public.mt_end_customers(id),
+  add column if not exists referral_code text,
+  add column if not exists loyalty_reset_at timestamptz,
+  add column if not exists loyalty_reward_pending text,
+  add column if not exists last_birthday_sent_at timestamptz,
+  add column if not exists last_debt_reminder_at timestamptz,
+  add column if not exists loyalty_reward_notified_count integer not null default 0;
+create unique index if not exists mt_end_customers_referral_code_idx on public.mt_end_customers(client_id, referral_code) where referral_code is not null;
+
+alter table public.mt_appointments
+  add column if not exists duration_minutes integer,
+  add column if not exists staff_id uuid references public.mt_staff(id),
+  add column if not exists service_id uuid references public.mt_services(id),
+  add column if not exists recurring_id uuid,
+  add column if not exists notes text,
+  add column if not exists morning_reminder_sent_at timestamptz,
+  add column if not exists google_event_id text;
+create index if not exists mt_appointments_google_event_idx on public.mt_appointments(google_event_id) where google_event_id is not null;
+comment on column public.mt_appointments.google_event_id is 'N-9: מזהה האירוע ביומן Google של העסק (סנכרון יוצא). null = טרם סונכרן.';
+-- N-9 סנכרון נכנס: חסימה שנוצרה מאירוע ביומן Google
+alter table public.mt_blocked_slots add column if not exists google_event_id text;
+create unique index if not exists mt_blocked_slots_google_event_idx on public.mt_blocked_slots(google_event_id) where google_event_id is not null;
+comment on column public.mt_appointments.morning_reminder_sent_at is 'N-1: תזכורת הבוקר (batch 09:00). נפרד מ-reminder_sent_at (T-24h).';
+
+-- 2.3: הרשמה עצמית לרשימת המתנה בלי תור קיים
+alter table public.mt_waitlist alter column original_appointment_id drop not null;
+alter table public.mt_waitlist add column if not exists desired_date date;
+alter table public.mt_waitlist add column if not exists source text not null default 'cancel_flow';
+comment on column public.mt_waitlist.source is 'cancel_flow = נרשם אחרי ביטול (הקיים); self = הרשמה עצמית מהאתר (2.3); manual = הצעה ידנית מהיומן.';
 
 -- ---------- 2. פונקציות הקשר (מי המשתמש הנוכחי) ----------
 create or replace function public.mt_current_client_id()
@@ -80,47 +132,6 @@ begin
 end $$;
 revoke execute on function public.mt_accept_staff_invite(text) from public, anon;
 grant execute on function public.mt_accept_staff_invite(text) to authenticated;
-
--- ---------- 3. הרחבת טבלאות קיימות ----------
-alter table public.mt_clients add column if not exists custom_domain text;
-comment on column public.mt_clients.custom_domain is 'N-4: דומיין מותאם של העסק (host בלבד). ה-build של האתר קורא אותו ל-canonical/OG.';
-
-alter table public.mt_staff
-  add column if not exists phone text,
-  add column if not exists role text not null default 'staff' check (role in ('owner','manager','staff')),
-  add column if not exists sees_all boolean not null default false,
-  add column if not exists hours_override jsonb;
-
-alter table public.mt_services add column if not exists visible_on_site boolean not null default true;
-comment on column public.mt_services.visible_on_site is 'מתג מוצג/מוסתר באתר (מסך המחירון). האתר מסנן לפי זה.';
-
-alter table public.mt_end_customers
-  add column if not exists notes text,
-  add column if not exists birthdate date,
-  add column if not exists blocked boolean,
-  add column if not exists block_override boolean not null default false,
-  add column if not exists custom_fields jsonb not null default '{}'::jsonb,
-  add column if not exists referred_by uuid references public.mt_end_customers(id),
-  add column if not exists referral_code text,
-  add column if not exists loyalty_reset_at timestamptz,
-  add column if not exists loyalty_reward_pending text,
-  add column if not exists last_birthday_sent_at timestamptz;
-create unique index if not exists mt_end_customers_referral_code_idx on public.mt_end_customers(client_id, referral_code) where referral_code is not null;
-
-alter table public.mt_appointments
-  add column if not exists duration_minutes integer,
-  add column if not exists staff_id uuid references public.mt_staff(id),
-  add column if not exists service_id uuid references public.mt_services(id),
-  add column if not exists recurring_id uuid,
-  add column if not exists notes text,
-  add column if not exists morning_reminder_sent_at timestamptz;
-comment on column public.mt_appointments.morning_reminder_sent_at is 'N-1: תזכורת הבוקר (batch 09:00). נפרד מ-reminder_sent_at (T-24h).';
-
--- 2.3: הרשמה עצמית לרשימת המתנה בלי תור קיים
-alter table public.mt_waitlist alter column original_appointment_id drop not null;
-alter table public.mt_waitlist add column if not exists desired_date date;
-alter table public.mt_waitlist add column if not exists source text not null default 'cancel_flow';
-comment on column public.mt_waitlist.source is 'cancel_flow = נרשם אחרי ביטול (הקיים); self = הרשמה עצמית מהאתר (2.3); manual = הצעה ידנית מהיומן.';
 
 -- ---------- 4. טבלאות חדשות ----------
 -- N-3 מחירון לכל איש צוות
@@ -228,7 +239,7 @@ create table if not exists public.mt_message_log (
   buttons jsonb,
   ref_type text,
   ref_id text,
-  status text not null default 'queued' check (status in ('queued','sent','failed','skipped')),
+  status text not null default 'queued' check (status in ('queued','sending','sent','failed','skipped')),
   wamid text,
   error text,
   created_at timestamptz not null default now(),
@@ -544,3 +555,21 @@ begin
   end if;
   return next;
 end $$;
+
+-- ---------- 12. N-9: עדכון מפתח בודד ב-integration_config ע"י n8n (service_role בלבד, לא anon/authenticated) ----------
+create or replace function public.mt_set_integration_value(p_client_id uuid, p_key text, p_value text)
+returns void language plpgsql security definer set search_path = public as $$
+begin
+  if p_key not in ('google_calendar_last_sync','google_calendar_id') then raise exception 'key not allowed'; end if;
+  update public.mt_clients set integration_config = coalesce(integration_config,'{}'::jsonb) || jsonb_build_object(p_key, p_value) where id = p_client_id;
+end $$;
+revoke execute on function public.mt_set_integration_value(uuid, text, text) from public, anon, authenticated;
+
+-- ---------- 13. N-4: מטא-נתונים ציבוריים של האתר לפי slug (ל-build של האתר: canonical/OG לפי הדומיין המותאם) ----------
+create or replace function public.get_site_meta_by_slug(p_slug text)
+returns jsonb language sql stable security definer set search_path = public as $$
+  select jsonb_build_object('business_name', business_name, 'custom_domain', custom_domain)
+  from public.mt_clients where slug = p_slug and status = 'active'
+$$;
+revoke execute on function public.get_site_meta_by_slug(text) from public, authenticated;
+grant execute on function public.get_site_meta_by_slug(text) to anon;
