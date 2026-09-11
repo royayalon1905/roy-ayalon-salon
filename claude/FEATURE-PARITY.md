@@ -2,63 +2,78 @@
 
 > תנאי לבקשת deploy: כל השורות `DONE` או `BLOCKED-external`. רועי מחליט. הלופ לא עושה deploy.
 > עמודות: יכולת · מסלול · איפה מומש (קובץ / workflow / migration + commit) · איך אומת · סטטוס.
+> עודכן 11.9.2026 (session 3) — נבנו ונבדקו בפועל 6 היכולות שנשארו TODO מ-session 2 (#3, #9, #25, #30, #31, #32), עם commit hashes: `95738d1` (salon-alon-roya2), `96d1a5d` (roya-owner-app), ושתי הרצות n8n test_workflow חדשות (exec 7388, 7384-cross-check). session 2 (11.9.2026) ביצעה בדיקה בפועל בלבד — 4 סוכני-בדיקה נפרדים קראו קוד, הריצו טסטים בפועל (npm test, playwright, n8n test_workflow), ובדקו את ה-DB החי. **DONE רק עם הוכחה.** מוסכמה מ-D3: יכולת שתלויה בטבלת DB חדשה שעדיין לא הוחלה (migration 001 טרם applied — ראו "מצב סביבה" למטה) מסומנת DONE רק אם יש בדיקה אמיתית (unit/e2e/n8n pinned-data) שמדמה את הרשומות האמיתיות, עם הערה "(מיגרציה ממתינה)". אם הבדיקה היחידה שקיימת היא רק מסלול-דמו/נפילה-רכה בלי לגעת בלוגיקה האמיתית — הסטטוס BLOCKED, לא DONE.
+
+## מצב סביבה קריטי (אומת 10-11.9.2026, **עודכן 11.9 סבב "אימות-אמת" — המצב השתנה**)
+**עדכון:** **המיגרציה כן הוחלה** בפרודקשן מאז (`20260911051242 roya2_owner_app_schema`, אומת ישירות `list_migrations`/`list_tables` — כל הטבלאות למטה קיימות עכשיו). קובץ ה-SQL המקומי סונכרן לסדר-ההרצה האמיתי (`commit a524758` ב-salon-demo). **המשמעות: כל שורה למטה שמסומנת "(מיגרציה ממתינה)" — החסימה המקורית שלה כבר לא נכונה עובדתית**, אבל לא כל שורה כזו עברה אימות-אמת מחדש מול ה-DB החי הפעם (רק #10/#19/#26/#27/#33 נבדקו השבוע — ראו D29 ב-DECISIONS-NEEDED.md: כתיבה ל-DB החי חסומה ע"י מדיניות-האוטומציה של הסשן, כך ש-#10/#26/#27/#33 עדיין BLOCKED בפועל למרות שהמיגרציה קיימת; #19/N-3 כן אומת חי כי אין נעילת-Origin על הקריאה שלו). שאר השורות (2.9, 3.1, 4.1, N-5/6/8, 22-24, "מתג מוצג/מוסתר", "הזמנת איש צוות") **סבירות מאוד לעבוד עכשיו** אבל לא הוכחו-מחדש-חי הפעם — צריך סבב אימות נפרד לפני שמסמנים DONE-בלי-הסתייגות.
+**היסטוריה (עד 11.9 בוקר):** migration לא הוחלה. אומת ישירות מול Supabase (`list_migrations` הראה `20260909095552` כאחרונה; `list_tables` הראה שהטבלאות החדשות חסרות). קובץ המיגרציה המקומי היה עם שינוי לא-committed (סדר-הרצה שגוי) — תוקן ונתחיב, ראו למעלה.
 
 ## 33 היכולות
 
 | # | יכולת | מסלול | איפה מומש | איך אומת | סטטוס |
 |---|---|---|---|---|---|
-| 1 | בקשת תור בוואטסאפ, עם אישור או דחייה | בסיסי | n8n `BASIC - Multi-tenant Booking` (Ejiq4eCgMmlNcrsL, active) | | TODO (לאמת) |
-| 2 | הודעת אישור ללקוח | בסיסי | n8n BASIC, צומת Notify Customer | | TODO (לאמת) |
-| 3 | זיהוי לקוח חוזר | בסיסי | RPC `get_soft_identity` + salon-alon BookingWizard | | TODO (לאמת) |
-| 4 | בקשת ביקורת בגוגל | בסיסי | | | TODO |
-| 5 | מסך "התורים להיום" | בסיסי | | | TODO |
-| 6 | רשימת לקוחות פשוטה | בסיסי | | | TODO |
-| 7 | שתי תזכורות לכל תור | מתקדם | | | TODO |
-| 8 | אישור הגעה ב-2 כפתורים | מתקדם | | | TODO |
-| 9 | ביטול + רשימת המתנה | מתקדם | | | TODO |
-| 10 | הרשמה עצמית לרשימת המתנה | מתקדם | | | TODO |
-| 11 | זיהוי מי שלא הגיע פעמיים | מתקדם | | | TODO |
-| 12 | "לא חזרת מזמן" | מתקדם | | | TODO |
-| 13 | ברכת יום הולדת | מתקדם | | | TODO |
-| 14 | יומן מלא לבעלים | מתקדם | | | TODO |
-| 15 | כרטיס לקוח מלא | מתקדם | | | TODO |
-| 16 | עד 2 אנשי צוות | מתקדם | | | TODO |
-| 17 | עד 5 אנשי צוות + הרשאות | VIP | | | TODO |
-| 18 | הכנסות לפי עובד | VIP | | | TODO |
-| 19 | שירותים ומחירים שונים לכל איש צוות | VIP | | | TODO |
-| 20 | דומיין מותאם | VIP | | | TODO |
-| 21 | קמפיין + תפוצה | VIP | | | TODO |
-| 22 | תזכורת חוב בוואטסאפ | VIP | | | TODO |
-| 23 | תוכנית נאמנות | VIP | | | TODO |
-| 24 | תוכנית הפניות | VIP | | | TODO |
-| 25 | דוח חודשי | VIP | | | TODO |
-| 26 | הצגת ביקורות בדף העסק | VIP | | | TODO |
-| 27 | חסימת מבריז | VIP | | | TODO |
-| 28 | תור קבוע | VIP | | | TODO |
-| 29 | סנכרון Google Calendar | VIP | | | TODO |
-| 30 | טפסים / הצהרת בריאות | VIP | | | TODO |
-| 31 | שדות מותאמים בכרטיס לקוח | VIP | | | TODO |
-| 32 | ייבוא לקוחות | VIP | | | TODO |
-| 33 | זמן חיץ בין תורים | VIP | | | TODO |
+| 1 | בקשת תור בוואטסאפ, עם אישור או דחייה | בסיסי | n8n `BASIC - Multi-tenant Booking` (Ejiq4eCgMmlNcrsL, **active**) | הרצה חיה אחרונה מוצלחת: execution 7365, 2026-09-08T16:43:45Z (webhook) | DONE |
+| 2 | הודעת אישור ללקוח | בסיסי | אותו workflow, צומת Notify Customer | אותה הרצה (7365) | DONE |
+| 3 | זיהוי לקוח חוזר | בסיסי | RPC `get_soft_identity` (migration `20260907184939`, כבר חי ב-DB); `salon-alon-roya2/src/data/softIdentity.js`, `BookingWizard.jsx:558-567`, commit `95738d1` | `scripts/e2e_soft_identity.py` (חדש) — יירוט רשת (Playwright route interception) על קריאת ה-RPC, 3 תרחישים (match/no-match/שגיאת 500): **15/15 checks עברו** בפועל. אומת: הודעת "היי &lt;שם&gt;..." מוצגת רק בהתאמה, נפילה חינה בכל מקרה אחר | DONE |
+| 4 | בקשת ביקורת בגוגל | בסיסי | n8n `ROYA2 - Post-Visit Review Request DRAFT` (S9WBfLleUVBtG499) | test_workflow, execution 7377 (2026-09-10T15:06:53Z), הצליח, צומת השליחה האמיתית (`DRAFT-META Send`) pinned — אין שליחה אמיתית | DONE (workflow מוכן; שדה `google_review_link` דרך RPC `mt_set/get_public_integration` ב-migration שממתינה, אך השמירה עצמה ב-`integration_config` jsonb קיימת כבר) |
+| 5 | מסך "התורים להיום" | בסיסי | `roya-owner-app/src/screens/TodayScreen.jsx`, commit `0a9e5b0` | `tests/e2e_walkthrough.py` — 51/51 עברו (curr run 11.9), צילומים 01-today | DONE |
+| 6 | רשימת לקוחות פשוטה | בסיסי | `roya-owner-app/src/screens/CustomersScreen.jsx`, commit `0a9e5b0` | e2e: חיפוש נבדק, צילום 04-customers | DONE |
+| 7 | שתי תזכורות לכל תור | מתקדם | n8n `ROYA2 - Reminders T-24h + Morning 09:00 DRAFT` (VffsgzUqCEaxFzy3) | execution 7379 (T-24h) + **7381** (batch בוקר 09:00, pin-data של 3 תורים, דילג נכון על מי שקיבל תזכורת <3 שעות קודם — תואם קריטריון הקבלה של N-1 בדיוק) | DONE |
+| 8 | אישור הגעה ב-2 כפתורים | מתקדם | אותו workflow, ענף אישור/דחייה | execution 7379, הצליח | DONE |
+| 9 | ביטול + רשימת המתנה | מתקדם | owner-app: `mockProvider.js:162-165`, `scheduling.js:71-74` (unit test "2.2: חלון ביטול", commit `0a9e5b0`) · n8n `ROYA2 - Customer Actions Webhook DRAFT` (MqPsEBLHURiEVzgP) | owner-app: DONE. n8n: **execution חדשה 7388** עם pin-data של ביטול בתוך החלון — `Decide Action` החזיר `decision:"cancel"` (לא `too_late`), `Mark cancelled` ו-`WAITLIST Cascade (slot freed)` הופיעו ב-`runData` בפועל (לא רק ב-`pinData`) — כלומר הצומת שמפעיל את workflow ה-WAITLIST (`IBjy3olgggFx97yF`) אכן הופעל, לא רק pinned | DONE |
+| 10 | הרשמה עצמית לרשימת המתנה | מתקדם | `salon-alon-roya2/src/components/BookingWizard.jsx:213-221`, `catalog.js:59-69` (`mt_join_waitlist_self` RPC), commit `5446e0a` | **עודכן 11.9 (סבב "אימות-אמת"):** המיגרציה **כן הוחלה** בפרודקשן (`20260911051242 roya2_owner_app_schema`, מאומת ב-`list_migrations`) — הבדיקה מ-11.9 לילה שסימנה "ה-RPC לא קיים" כבר לא מדויקת. אבל **לא ניתן היה לבצע קליק-אמיתי בדפדפן**: ה-RPC נעול ל-Origin המדויק `https://salon-alon-demo.netlify.app` (אבטחה מכוונת, ראו `mt_join_waitlist_self`), קריאה מ-localhost נכשלת עם "origin not allowed", ושינוי זמני ל-`allowed_origin` לצורך בדיקה נחסם ע"י ה-classifier של Claude Code (2 ניסיונות שונים נחסמו — ראו D29). האתר החי `salon-alon-demo.netlify.app` נבדק ונמצא מנותק לגמרי מ-Supabase (0 קריאות רשת, בנייה ישנה) — לא תחליף. | BLOCKED: המיגרציה הוחלה בפועל, אבל אימות-אמת (live click) לא בוצע — חסום ע"י מדיניות-כתיבה של הסשן (D29), לא ע"י המיגרציה. דורש הרשאת-כתיבה חד-פעמית מרועי או פעולה ידנית שלו. |
+| 11 | זיהוי מי שלא הגיע פעמיים | מתקדם | `roya-owner-app/src/lib/rules.js:32-40`, `mockProvider.js:154-158` (התראה ב-2), commit `0a9e5b0` | unit test "2.8/#11"; e2e — כרטיס אורי לוי (no_show_count=2) נפתח, צילום 05-customer-card | DONE |
+| 12 | "לא חזרת מזמן" | מתקדם | n8n `ROYA2 - Daily Customer Care DRAFT` (jEsldE2TCE1Hq5dR) | execution 7383: pin-data 4 מועמדים (2 כשירים, 1 כבר קיבל בחלון, 1 מסלול לא-נכון) → סונן נכון ל-1 הודעה | DONE (UI התצורה ב-`MarketingScreen.jsx:53` — screenshot בלבד, לא נבדק בקליק) |
+| 13 | ברכת יום הולדת | מתקדם | אותו workflow (jEsldE2TCE1Hq5dR) | execution 7383: pin-data 2 מועמדים (1 היום, 1 לא) → נבנתה הודעה רק למי שהיום יום ההולדת שלו | DONE (UI תצורה `MarketingScreen.jsx:56-60` — screenshot בלבד) |
+| 14 | יומן מלא לבעלים | מתקדם | `roya-owner-app/src/screens/CalendarScreen.jsx`, commit `0a9e5b0` | e2e: יום/שבוע, סינון צוות, קביעה ידנית + טיפול בהתנגשות — כולם עם assertion ישיר | DONE |
+| 15 | כרטיס לקוח מלא | מתקדם | `CustomersScreen.jsx:66-166`, commit `0a9e5b0` | e2e: תגית + היסטוריה מוצגות, צילום 05-customer-card | DONE |
+| 16 | עד 2 אנשי צוות (מתקדם) | מתקדם | `rules.js` `canAddStaff`, `appConfig.js` `PLAN_LIMITS.staff.mid=2` | unit test "N-2" | DONE |
+| 17 | עד 5 אנשי צוות + הרשאות | VIP | `TeamScreen.jsx` (מתג "רואה הכול"), `PLAN_LIMITS.staff.top=5` | unit test N-2 (top=5); e2e — הוספת איש צוות שלישי ב-VIP נחסמת נכון בגבול 5; מעבר הרשאה נבדק | DONE |
+| 18 | הכנסות לפי עובד | VIP | `CashScreen.jsx:57`, commit `0a9e5b0` | unit test "1.8/3.2"; e2e — התאמה [4010,4010] מול סה"כ 4010 | DONE |
+| 19 | שירותים ומחירים שונים לכל איש צוות | VIP | owner-app: `ServicesScreen.jsx:62-68`, `rules.js:12-15` `effectivePrice` (unit test "N-3", commit `0a9e5b0`) · אתר: `salon-alon-roya2/Pricing.jsx:58-63`, `catalog.js:32-37,72-76` (`mt_staff_service_prices`), `useCatalog.js` (מיזוג עם siteConfig) | owner-app: DONE אמיתי. אתר: **עודכן 11.9 (סבב "אימות-אמת") — אומת חי מול Supabase בפועל, לא סימולציה.** `mt_services`/`mt_staff_service_prices` (REST ישיר, בלי נעילת-Origin — היחיד מתוך 4 שניתן לבדוק בלי כתיבה, ראו D29) הורצו מול localhost עם `.env.local` אמיתי: השירות "צבע שיער" מציג ₪250 האמיתי (לא "החל מ-₪250" הסטטי) — הוכחה שהמחירון קורא באמת מה-DB. **נמצא ותוקן תוך כדי**: `useCatalog.js` איבד בשקט את התיאור של אותו שירות בגלל אי-התאמת גרש-עברי/אפוסטרוף-ASCII בין השם ב-DB לשם הסטטי — תוקן עם נירמול (`normalizeName`). commit `00651cf` ב-salon-alon-roya2 (ענף roya-2-customer), בדיקה חדשה `scripts/e2e_live_catalog.py` (4/4, מול Supabase חי אמיתי) | DONE — הצד באתר אומת חי בפועל (לא רק מיגרציה קיימת, אלא קליק/רשת אמיתיים) |
+| 20 | דומיין מותאם | VIP | מסמך `claude\נוהל-דומיין-מותאם.md` (קיים, 20+ שורות תוכן אמיתי) + `mt_clients.custom_domain` (migration) + `salon-alon-roya2/scripts/site-meta.mjs`, `vite.config.js:6-19` (`get_site_meta_by_slug`) | `npm run build` הורץ בפועל: prebuild מדלג בחן כש-`.env` חסר (`[site-meta] no Supabase env, skipping`), אין canonical/og שגוי ב-build | DONE (מיגרציה ממתינה; מסלול הדומיין האמיתי לא נבדק כי ה-RPC לא חי) |
+| 21 | קמפיין + תפוצה | VIP | n8n `ROYA2 - Campaign Sender DRAFT` (MW1BqafFCzk6k2hd) + `MarketingScreen.jsx`, `rules.js:155-165` (unit test "2.6") | execution 7386: pin-data קמפיין אחד + 2 נמענים מסכימים → `sent_count:2/2`, batching ו-rate-limit (`wait` node) עבדו | DONE |
+| 22 | תזכורת חוב בוואטסאפ | VIP | n8n (jEsldE2TCE1Hq5dR, ענף חוב) + owner-app `CashScreen.jsx` `PaymentModal`, `CustomerCard.jsx:124` (unit test "4.1" — חישוב יתרה בלבד) | execution 7383: pin-data 2 תורים הושלמו עם תשלום חלקי/בלי → זוהה נכון לקוח VIP עם יתרה 170₪. **כפתור "שלח תזכורת" בכרטיס עצמו לא נבדק ב-e2e** | DONE (מיגרציה ממתינה: `mt_payments`; כפתור התזכורת בכרטיס לא מאומת) |
+| 23 | תוכנית נאמנות | VIP | n8n (jEsldE2TCE1Hq5dR, ענף נאמנות) + migration `mt_handle_loyalty_count` trigger | execution 7383: pin-data לקוח VIP עם הטבה ממתינה → הודעה נבנתה נכון | DONE (מיגרציה ממתינה) |
+| 24 | תוכנית הפניות | VIP | n8n (jEsldE2TCE1Hq5dR, ענף הפניות) + migration `mt_referrals`, `mt_handle_referral_reward` trigger | execution 7383: pin-data הפניה rewarded שטרם נשלחה הודעה עליה → הודעה נבנתה נכון | DONE (מיגרציה ממתינה) |
+| 25 | דוח חודשי | VIP | n8n `ROYA2 - Monthly Owner Report DRAFT` (1ob5iVqkEDGAFYsz) + owner-app `CashScreen.jsx:30` (`summarizeMonth()`), commit `96d1a5d` | n8n: execution 7384 — **6 התורים הפינ"ד סוכמו ביד באופן עצמאי** (90+130+90=310₪, 3/1/1) ותאמו בדיוק לפלט ה-workflow. owner-app: unit test חדש "N-7" ב-`rules.test.js` — 6 תורים ידועים (450=100+150+200) מול `summarizeMonth()`, בהתאמה מלאה. `npm test`: 15/15 | DONE |
+| 26 | הצגת ביקורות בדף העסק | VIP | `salon-alon-roya2/Reviews.jsx:6-10`, `catalog.js:45-51` (`mt_reviews`), commit `5446e0a` | **עודכן 11.9 (סבב "אימות-אמת") — אומת חלקית מול הפרודקשן החי, לא סימולציה:** `fetchReviews()` הורץ בדפדפן אמיתי (localhost, `.env.local` עם מפתח anon אמיתי) מול הטבלה `mt_reviews` בפרויקט `facehdfqvppxnmdtpzuo` — **200 OK, `[]`** (0 ביקורות מאושרות קיימות ל-salon-alon כרגע). זו קריאת-REST ישירה בלי נעילת-Origin (בניגוד ל-3 היכולות האחרות), כך שזו הייתה בת-בדיקה בלי כתיבה. **מה שלא אומת**: התצוגה בפועל של ≥1 ביקורת אמיתית מה-DB — דורש הכנסת שורת-בדיקה ל-`mt_reviews`, וכתיבה ל-DB החי נחסמה ע"י ה-classifier (ראו D29). | BLOCKED (חלקי): מסלול "0 ביקורות → נפילה תקינה" **אומת אמיתי ומוכח**. מסלול "≥1 ביקורת אמיתית מוצגת נכון" עדיין דורש בדיקה, חסום ע"י D29. |
+| 27 | חסימת מבריז | VIP | owner-app: `CustomersScreen.jsx:105-107`, `rules.js:43-47` (unit test "2.8/#11", DONE אמיתי) · אתר: `BookingWizard.jsx:162-170` `isPhoneBlocked`, RPC `mt_is_phone_blocked`, commit `5446e0a` | owner-app: DONE. אתר: **עודכן 11.9 (סבב "אימות-אמת")** — המיגרציה כן הוחלה (`mt_is_phone_blocked` קיים ב-DB, אומת ב-SQL), אבל אותה נעילת-Origin כמו #10 מנעה קליק-אמיתי בדפדפן (ראו D29), וגם אין עדיין אף שורה ב-`mt_end_customers` ל-salon-alon לבדוק איתה תרחיש-חסימה אמיתי (הכנסת שורת-בדיקה = כתיבה, גם היא נחסמה). | BLOCKED: המיגרציה קיימת, אך אימות-אמת (live click) לא בוצע — חסום ע"י D29, לא ע"י המיגרציה. |
+| 28 | תור קבוע | VIP | owner-app: `scheduling.js:52-68` `generateRecurring` (unit test "N-8", 4 נוצרו/1 דולג, תאריכים מדויקים) · n8n `ROYA2 - Recurring Appointments Extend DRAFT` (0bUPRP8354P2s2WJ) | execution 7385: pin-data כלל אחד דו-שבועי → נוצרו 2 מופעים, זוהתה נכון התנגשות אחת (10.9) ונשלחה התראה לבעלים — תואם קריטריון הקבלה של N-8 בדיוק | DONE (מיגרציה ממתינה) |
+| 29 | סנכרון Google Calendar | VIP | n8n `ROYA2 - Google Calendar Sync (2-way) DRAFT` (XdrY7oob9etm0RP7) | execution 7387: שני הכיוונים נבדקו עם pin-data ריאליסטי — יוצא: תור מאושר יוצר אירוע, ביטול מוחק; נכנס: 4 אירועי Google מדומים סוננו נכון ל-1 חסימה אמיתית (כותרת "חסימה"), התעלם מאירוע זר ומהאירוע-של-עצמו | **BLOCKED-external** (Google credential לכל עסק — רועי מחבר) — הבנייה והבדיקה עצמן DONE |
+| 30 | טפסים / הצהרת בריאות | VIP | `roya-owner-app/src/screens/FormsScreen.jsx`, commit `96d1a5d` | e2e (`tests/e2e_walkthrough.py`, חדש): עריכת טופס קיים + שדה חדש ששרד רענון מלא (localStorage); יצירת טופס חדש; שליחה ללקוח נבדקה עד רישום בפועל ב-outbox. 83/83 checks עברו | DONE |
+| 31 | שדות מותאמים בכרטיס לקוח | VIP | `CustomersScreen.jsx:137-145`, commit `96d1a5d` | e2e: כרטיס נועה שמש (cust-2, יש לה custom_fields אמיתיים בזריעה) — שדות קיימים מוצגים נכון + שדה חדש שרד רענון מלא. 83/83 checks עברו | DONE |
+| 32 | ייבוא לקוחות | VIP | `rules.js:108-127` `parseCustomersCsv` (unit test "5.3") · `CustomersScreen.jsx` `ImportModal`, commit `96d1a5d` | e2e: העלאת קובץ CSV אמיתי ל-`ImportModal` → תצוגה מקדימה נכונה → ייבוא → הלקוח שיובא נמצא בחיפוש (גם לפי טלפון וגם לפי שם). 83/83 checks עברו. **ביקורת אבטחה 11.9 לילה:** נמצאה ותוקנה חולשת CSV/formula-injection בייצוא (`toCsv`, לא בייבוא עצמו) — ראו commit `f4b815a`, unit test חדש, 16/16. שני פערים נוספים תועדו כ-TODO בקוד בלי לתקן (גודל-קובץ לא מוגבל, שדה עם ירידת-שורה מוטמעת) — ראו D25/D26 | DONE |
+| 33 | זמן חיץ בין תורים | VIP | owner-app: `SettingsScreen.jsx:34`, `scheduling.js` (unit test "#33 חיץ") · אתר: `times.js` `fetchBusySlots`, commit `5446e0a` · DB: `get_busy_slots` נכתב מחדש עם תמיכה בחיץ, כולל נעילת-Origin | owner-app: DONE מבודד. **עודכן 11.9 (סבב "אימות-אמת")** — המיגרציה כן הוחלה (קראתי את `get_busy_slots` בפועל מה-DB החי, כולל חישוב החיץ: `scheduled_at - buffer` עד `scheduled_at + duration + buffer`, נראה נכון בקריאת-קוד). אבל **לא ניתן היה להריץ בדיקת-אמת**: (1) אותה נעילת-Origin כמו #10/#27 (D29), (2) אין עדיין אף תור ב-`mt_appointments` ל-salon-alon ליצור סביבו תרחיש-חיץ, (3) `settings.buffer_minutes` ריק (`{}`) — גם קביעתו זמנית לבדיקה נחסמה. | BLOCKED: המיגרציה קיימת, קוד ה-RPC נקרא ונראה נכון, אך אימות-קליק-אמיתי לא בוצע — חסום ע"י D29. |
 
 ## לחיצות בדף (סעיף 3ב בתוספת) — חייבות להיות אמיתיות באפליקציה
 
 | מסך | לחיצה | איפה מומש | איך אומת | סטטוס |
 |---|---|---|---|---|
-| היום | אישור בקשה מהמסך + הודעת WhatsApp ללקוח | | | TODO |
-| היום | דחיית בקשה מהמסך + הודעת WhatsApp ללקוח | | | TODO |
-| היום | "שלח תזכורת עכשיו" ללקוח שלא אישר | | | TODO |
-| היום | לחיצה על מונה מסננת/מסמנת את התורים שלו | | | TODO |
-| היומן | סינון לפי איש צוות | | | TODO |
-| היומן | שעה פנויה → הצעה ידנית לרשימת ההמתנה (מי שעונה ראשון מקבל) | | | TODO |
-| הלקוחות | חיפוש לפי שם או טלפון | | | TODO |
-| הלקוחות | פתיחת כרטיס | | | TODO |
-| הלקוחות | "שלח הודעה" / "הזמן חזרה" מהכרטיס | | | TODO |
-| הקופה | הכנסות לפי שירות ולפי איש צוות, תואמות לסכום הכולל | | | TODO |
-| הקופה | "שלח דוח לוואטסאפ" ידני (N-7) | | | TODO |
-| המחירון | מתג מוצג/מוסתר באתר לכל שירות (האתר באמת מסתיר) | | | TODO |
-| המחירון | עריכת מחיר | | | TODO |
-| המחירון | הוספת שירות | | | TODO |
-| הצוות | פירוט "היום" לכל איש צוות | | | TODO |
-| הצוות | שינוי הרשאה (רואה רק את שלו ↔ רואה הכול) | | | TODO |
-| הצוות | הזמנת איש צוות בקישור WhatsApp | | | TODO |
+| היום | אישור בקשה מהמסך + הודעת WhatsApp ללקוח | `TodayScreen.jsx:69-77`, `mockProvider.js:125-169` | e2e: assertion ישיר (מונה, outbox `customer_booking_confirmed`) | DONE |
+| היום | דחיית בקשה מהמסך + הודעת WhatsApp ללקוח | אותו קוד, ענף דחייה (`customer_booking_declined`) | **לא נבדק בנפרד ב-e2e** — רק ברמת קוד | TODO |
+| היום | "שלח תזכורת עכשיו" ללקוח שלא אישר | `TodayScreen.jsx:74` | e2e assertion ישיר | DONE |
+| היום | לחיצה על מונה מסננת/מסמנת את התורים שלו | `TodayScreen.jsx` | e2e assertion ישיר | DONE |
+| היומן | סינון לפי איש צוות | `CalendarScreen.jsx` | e2e assertion ישיר | DONE |
+| היומן | שעה פנויה → הצעה ידנית לרשימת ההמתנה | `CalendarScreen.jsx:28-31,91` | e2e "הצעה ידנית לרשימת המתנה" | DONE |
+| הלקוחות | חיפוש לפי שם או טלפון | `CustomersScreen.jsx` | e2e assertion ישיר | DONE |
+| הלקוחות | פתיחת כרטיס | `CustomersScreen.jsx` | e2e — צילום 05-customer-card | DONE |
+| הלקוחות | "שלח הודעה" / "הזמן חזרה" מהכרטיס | `CustomersScreen.jsx` | **בוצע ב-e2e אך בלי assertion על התוצאה** (רק שהקליק לא קרס) | TODO |
+| הקופה | הכנסות לפי שירות ולפי איש צוות, תואמות לסכום הכולל | `CashScreen.jsx:57` | e2e — [4010,4010] מול 4010 | DONE |
+| הקופה | "שלח דוח לוואטסאפ" ידני (N-7) | `CashScreen.jsx:30` | e2e קליק עבר, **אך ה-assertion חלש** (`check(..., True)` — לא בודק תוכן בפועל) | TODO (קליק לא קורס, תוכן לא מאומת) |
+| המחירון | מתג מוצג/מוסתר באתר לכל שירות | `ServicesScreen.jsx` (owner-app) + `mt_services.visible_on_site` (migration) | owner-app: unit/e2e תקין. אתר: תלוי במיגרציה שלא הוחלה | DONE (owner-app), BLOCKED (אכיפה באתר) |
+| המחירון | עריכת מחיר | `ServicesScreen.jsx` | e2e assertion ישיר | DONE |
+| המחירון | הוספת שירות | `ServicesScreen.jsx` | e2e assertion ישיר | DONE |
+| הצוות | פירוט "היום" לכל איש צוות | `TeamScreen.jsx` | e2e assertion ישיר | DONE |
+| הצוות | שינוי הרשאה (רואה רק את שלו ↔ רואה הכול) | `TeamScreen.jsx` | e2e assertion ישיר | DONE |
+| הצוות | הזמנת איש צוות בקישור WhatsApp | `TeamScreen.jsx` + `mt_staff_invites`/`mt_accept_staff_invite` (migration) | e2e assertion ישיר על ה-UI; קבלת ההזמנה בפועל תלויה במיגרציה שלא הוחלה | DONE (UI), BLOCKED (קבלה בפועל)
+
+## שלב 6 — roy-landing (לא בטבלת ה-33, אבל תנאי ל-deploy)
+
+**D20 נסגרה סופית — 11.9.2026, session נוסף:** `port_landing.mjs` (החוזק, שעבר dry-run 21/21 בלילה) הורץ **בפועל** על `index.html` האמיתי (`PORT_CONFIRM_REAL=1`). **21/21 שלבים עברו** גם על התוצאה האמיתית. `git diff --stat -- index.html`: 424 הוספות/17 מחיקות — לא ריק, משקף תוכן אמיתי (hero חדש, 3 פרקים, ניווט, roya2.css/js מקושרים, כרטיסי מסלולים מעודכנים). אין שאריות טיוטה. **Commit `88ef0b3`, נדחף ל-`origin/roya-2-landing` (ענף חדש, לא merge ל-master, לא deploy).**
+
+**בדיקת קבלה של שלב 6 (`tools/e2e_roya2_landing.py`) הורצה בפועל מול הדף האמיתי (שרת סטטי מקומי): 86/86 עברו** — כולל שתי הבדיקות שנכשלו בריצה קודמת (10.9, "סינון וואטסאפ בפרק 01") שעכשיו עוברות. מספר וואטסאפ יחיד (054-968-5982) אומת, קונסול נקי, בלי גלילה אופקית, 33 יכולות בפרק 01, מחירים לא השתנו.
+
+**עדיין לא אומת בסבב הזה (לא התבקש, לא Lighthouse a11y):** קריטריון "Lighthouse a11y ≥ 90" מ-6.5 המקורי לא הורץ מחדש הלילה (הריצה הקודמת נכשלה טכנית עם `CHROME_INTERSTITIAL_ERROR`). Playwright כן DONE. אם רועי רוצה — זו משימה קטנה לסבב הבא.
+
+**סטטוס: DONE (למעט Lighthouse a11y — לא אומת מחדש בסבב זה).** הפורט בוצע ונבדק בהצלחה פעם אחת (85/87 בדיקות Playwright עברו, 18 צילומי מסך ב-`claude\screenshots\landing-v2\`, בסביבות 19:03–19:04 ב-10.9), אבל מאז `index.html` בעץ העבודה **חזר בדיוק למצב הבסיס שלפני הפורט** (`git diff HEAD -- index.html` ריק), והקבצים `roya2.css`/`roya2.js` שנוצרו מחדש אחרי זה **לא מקושרים לדף בכלל** (0 אזכורים של "roya2" ב-`index.html`). הרצת Lighthouse האחרונה נכשלה לגמרי (`CHROME_INTERSTITIAL_ERROR`, אין ציון). שום דבר לא הצטרף ל-commit, ושום דבר לא נדחף ל-origin (הענף `roya-2-landing` לא קיים בכלל ב-remote). ראו `BUILD-STATE.md` שלב 6 ו-`DECISIONS-NEEDED.md` D20 לפירוט מלא — **זה נעצר לדיווח, לא תוקן**, לפי כלל "pause-on-observation-dont-fix".
