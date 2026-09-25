@@ -12,7 +12,7 @@
 
 | # | יכולת | מסלול | איפה מומש | איך אומת | סטטוס |
 |---|---|---|---|---|---|
-| 1 | בקשת תור בוואטסאפ, עם אישור או דחייה | בסיסי | n8n `BASIC - Multi-tenant Booking` (Ejiq4eCgMmlNcrsL, **active**) | הרצה חיה אחרונה מוצלחת: execution 7365, 2026-09-08T16:43:45Z (webhook) | DONE |
+| 1 | קביעת תור מיידית, עם עדכון בוואטסאפ (שונה 25.9.2026: בלי שלב אישור/דחייה של בעל העסק; נדרש שינוי ב-Insert Appointment ל-status confirmed, ממתין לאישור רועי) | בסיסי | n8n `BASIC - Multi-tenant Booking` (Ejiq4eCgMmlNcrsL, **active**) | הרצה חיה אחרונה מוצלחת: execution 7365, 2026-09-08T16:43:45Z (webhook) | DONE |
 | 2 | הודעת אישור ללקוח | בסיסי | אותו workflow, צומת Notify Customer | אותה הרצה (7365) | DONE |
 | 3 | זיהוי לקוח חוזר | בסיסי | RPC `get_soft_identity` (migration `20260907184939`, כבר חי ב-DB); `salon-alon-roya2/src/data/softIdentity.js`, `BookingWizard.jsx:558-567`, commit `95738d1` | `scripts/e2e_soft_identity.py` (חדש) — יירוט רשת (Playwright route interception) על קריאת ה-RPC, 3 תרחישים (match/no-match/שגיאת 500): **15/15 checks עברו** בפועל. אומת: הודעת "היי &lt;שם&gt;..." מוצגת רק בהתאמה, נפילה חינה בכל מקרה אחר | DONE |
 | 4 | בקשת ביקורת בגוגל | בסיסי | n8n `ROYA2 - Post-Visit Review Request DRAFT` (S9WBfLleUVBtG499) | test_workflow, execution 7377 (2026-09-10T15:06:53Z), הצליח, צומת השליחה האמיתית (`DRAFT-META Send`) pinned — אין שליחה אמיתית | DONE (workflow מוכן; שדה `google_review_link` דרך RPC `mt_set/get_public_integration` ב-migration שממתינה, אך השמירה עצמה ב-`integration_config` jsonb קיימת כבר) |

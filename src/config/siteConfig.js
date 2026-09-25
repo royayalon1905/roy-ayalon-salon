@@ -88,7 +88,7 @@ export const siteConfig = {
     bookingIntro: {
       eyebrow: 'בואו נקבע',
       title: 'קביעת תור',
-      subtitle: 'מלאו פרטים ונחזור אליכם לאישור תוך שעה בשעות הפעילות.',
+      subtitle: 'בוחרים שירות, יום ושעה, והתור נכנס מיד ליומן.',
       nameLabel: 'שם מלא',
       namePlaceholder: 'ישראל ישראלי',
       phoneLabel: 'טלפון',
@@ -106,7 +106,7 @@ export const siteConfig = {
       ],
       notesLabel: 'הערות (לא חובה)',
       notesPlaceholder: 'משהו שכדאי שנדע מראש?',
-      submitLabel: 'שליחת בקשה לתור',
+      submitLabel: 'קביעת התור',
       helperNote: 'שליחת הטופס פותחת את מסך קביעת התור המלא, עם הפרטים שבחרתם כבר ממולאים.',
     },
     serviceCard: {
@@ -215,9 +215,9 @@ export const siteConfig = {
       dateTimeSummary: 'יום {day}, {date} ל{month} בשעה {time}',
       confirmation: {
         greeting: 'תודה, {name}!',
-        summary: 'קיבלנו את בקשתך ל{service} עם {barber} — יום {day}, {date} ל{month} בשעה {time}.',
+        summary: 'התור שלך ל{service} עם {barber} נקבע ליום {day}, {date} ל{month} בשעה {time}.',
         codeNote: 'מספר תור: #{code}',
-        waitNote: 'נעדכן אותך בוואטסאפ ברגע שהמועד יאושר.',
+        waitNote: 'התור כבר ביומן. לפני התור תישלח אליך תזכורת בוואטסאפ.',
         demoNote: 'זהו דמו — לא נשלח אישור אמיתי.',
         anotherLabel: 'תור נוסף',
         closeLabel: 'סגירה',
